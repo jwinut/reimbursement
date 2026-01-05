@@ -1,5 +1,4 @@
 import { NextAuthOptions } from 'next-auth'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import type { OAuthConfig } from 'next-auth/providers/oauth'
 import { prisma } from './prisma'
 
@@ -16,7 +15,7 @@ const LineProvider: OAuthConfig<LineProfile> = {
   type: 'oauth',
   authorization: {
     url: 'https://access.line.me/oauth2/v2.1/authorize',
-    params: { scope: 'profile openid', bot_prompt: 'normal' }
+    params: { scope: 'profile', bot_prompt: 'normal' }
   },
   token: 'https://api.line.me/oauth2/v2.1/token',
   userinfo: 'https://api.line.me/v2/profile',
@@ -28,11 +27,11 @@ const LineProvider: OAuthConfig<LineProfile> = {
       name: profile.displayName,
       image: profile.pictureUrl ?? null
     }
-  }
+  },
+  checks: ['state']
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
   providers: [LineProvider],
   callbacks: {
     async signIn({ account, profile }) {
