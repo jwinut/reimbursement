@@ -90,5 +90,110 @@ describe('expenseSchema', () => {
       })
       expect(result.success).toBe(true)
     })
+
+    it('should accept today date', () => {
+      const today = new Date().toISOString().split('T')[0]
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: today,
+      })
+      expect(result.success).toBe(true)
+    })
+  })
+
+  describe('image', () => {
+    it('should accept no image (optional field)', () => {
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: '2024-01-01',
+      })
+      expect(result.success).toBe(true)
+    })
+
+    it('should accept valid JPEG image under 5MB', () => {
+      const mockFile = {
+        size: 1024 * 1024, // 1MB
+        type: 'image/jpeg',
+      }
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: '2024-01-01',
+        image: mockFile,
+      })
+      expect(result.success).toBe(true)
+    })
+
+    it('should accept valid PNG image', () => {
+      const mockFile = {
+        size: 2 * 1024 * 1024, // 2MB
+        type: 'image/png',
+      }
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: '2024-01-01',
+        image: mockFile,
+      })
+      expect(result.success).toBe(true)
+    })
+
+    it('should accept valid WebP image', () => {
+      const mockFile = {
+        size: 1024 * 1024,
+        type: 'image/webp',
+      }
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: '2024-01-01',
+        image: mockFile,
+      })
+      expect(result.success).toBe(true)
+    })
+
+    it('should reject image over 5MB', () => {
+      const mockFile = {
+        size: 6 * 1024 * 1024, // 6MB
+        type: 'image/jpeg',
+      }
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: '2024-01-01',
+        image: mockFile,
+      })
+      expect(result.success).toBe(false)
+    })
+
+    it('should reject non-image file types', () => {
+      const mockFile = {
+        size: 1024 * 1024,
+        type: 'application/pdf',
+      }
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: '2024-01-01',
+        image: mockFile,
+      })
+      expect(result.success).toBe(false)
+    })
+
+    it('should reject GIF images', () => {
+      const mockFile = {
+        size: 1024 * 1024,
+        type: 'image/gif',
+      }
+      const result = expenseSchema.safeParse({
+        description: 'Test',
+        amount: '100',
+        date: '2024-01-01',
+        image: mockFile,
+      })
+      expect(result.success).toBe(false)
+    })
   })
 })
