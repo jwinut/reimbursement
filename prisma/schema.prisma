@@ -10,8 +10,8 @@ datasource db {
 }
 
 enum Role {
-  USER
-  ADMIN
+  EMPLOYEE
+  MANAGER
 }
 
 model User {
@@ -19,7 +19,7 @@ model User {
   lineId      String    @unique
   displayName String?
   pictureUrl  String?
-  role        Role      @default(USER)
+  role        Role      @default(EMPLOYEE)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -27,12 +27,16 @@ model User {
   accounts Account[]
   sessions Session[]
   expenses Expense[]
+
+  // Approval workflow - expenses this user has approved
+  approvedExpenses Expense[] @relation("ApprovedExpenses")
 }
 
 enum ExpenseStatus {
   PENDING
   APPROVED
   REJECTED
+  REIMBURSED
 }
 
 model Expense {
@@ -46,6 +50,16 @@ model Expense {
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
+  // Approval workflow fields
+  approverId      String?
+  approver        User?     @relation("ApprovedExpenses", fields: [approverId], references: [id])
+  rejectionReason String?
+  approvalDate    DateTime?
+
+  // Payment tracking fields
+  paidDate        DateTime?
+  paidAmount      Decimal?  @db.Decimal(10, 2)
 }
 
 // NextAuth.js Models

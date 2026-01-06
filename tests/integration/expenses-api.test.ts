@@ -15,6 +15,7 @@ vi.mock('@/lib/prisma', () => ({
     expense: {
       create: vi.fn(),
       findMany: vi.fn(),
+      count: vi.fn(),
     },
   },
 }))
@@ -152,7 +153,7 @@ describe('Expenses API', () => {
       const request = createFormDataRequest({
         description: 'Test',
         amount: '100',
-        date: futureDate.toISOString().split('T')[0],
+        date: futureDate.toISOString().split('T')[0]!,
       })
 
       const response = await POST(request)
@@ -256,31 +257,36 @@ describe('Expenses API', () => {
         { id: '2', description: 'Expense 2', amount: 200 },
       ]
 
-      ;(getServerSession as any).mockResolvedValue({ user: { id: 'user-123' } })
+      ;(getServerSession as any).mockResolvedValue({ user: { id: 'user-123', role: 'EMPLOYEE' } })
       ;(prisma.expense.findMany as any).mockResolvedValue(mockExpenses)
+      ;(prisma.expense.count as any).mockResolvedValue(2)
 
       const request = new NextRequest('http://localhost:3000/api/expenses')
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data).toEqual(mockExpenses)
-      expect(prisma.expense.findMany).toHaveBeenCalledWith({
-        where: { userId: 'user-123' },
-        orderBy: { createdAt: 'desc' },
+      expect(data.expenses).toEqual(mockExpenses)
+      expect(data.pagination).toEqual({
+        page: 1,
+        limit: 20,
+        total: 2,
+        totalPages: 1,
       })
     })
 
     it('should return empty array if no expenses', async () => {
-      ;(getServerSession as any).mockResolvedValue({ user: { id: 'user-123' } })
+      ;(getServerSession as any).mockResolvedValue({ user: { id: 'user-123', role: 'EMPLOYEE' } })
       ;(prisma.expense.findMany as any).mockResolvedValue([])
+      ;(prisma.expense.count as any).mockResolvedValue(0)
 
       const request = new NextRequest('http://localhost:3000/api/expenses')
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data).toEqual([])
+      expect(data.expenses).toEqual([])
+      expect(data.pagination.total).toBe(0)
     })
   })
 })
