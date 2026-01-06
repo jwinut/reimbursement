@@ -9,6 +9,9 @@ RUN npm ci
 FROM node:24-alpine AS builder
 WORKDIR /app
 
+# Dummy DATABASE_URL for Prisma generate (not used at runtime)
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
