@@ -265,3 +265,45 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Production
+    needs: [docker]
+    runs-on: [self-hosted, reimbursement]
+    environment: production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Pull latest image
+        run: docker pull ghcr.io/jwinut/reimbursement:latest
+
+      - name: Stop existing container
+        run: docker stop reimbursement-app || true
+
+      - name: Remove existing container
+        run: docker rm reimbursement-app || true
+
+      - name: Run new container
+        run: |
+          docker run -d \
+            --name reimbursement-app \
+            --restart unless-stopped \
+            -p 3000:3000 \
+            -e DATABASE_URL="${{ vars.DATABASE_URL }}" \
+            -e NEXTAUTH_URL="${{ vars.NEXTAUTH_URL }}" \
+            -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
+            -e LINE_CLIENT_ID="${{ vars.LINE_CLIENT_ID }}" \
+            -e LINE_CLIENT_SECRET="${{ secrets.LINE_CLIENT_SECRET }}" \
+            ghcr.io/jwinut/reimbursement:latest
+
+      - name: Cleanup old images
+        run: docker image prune -f
+
+      - name: Verify deployment
+        run: |
+          sleep 5
+          docker ps | grep reimbursement-app
+          echo "Deployment successful!"
