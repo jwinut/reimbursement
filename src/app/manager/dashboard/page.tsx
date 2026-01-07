@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 import { Role } from '@prisma/client'
 import { Navigation } from '@/components/Navigation'
-import { ExpenseList, ExpenseCardData } from '@/components/ExpenseList'
+import { ExpenseCardData } from '@/components/ExpenseList'
+import { PendingExpenseTable } from '@/components/PendingExpenseTable'
 import Link from 'next/link'
 
 interface SummaryData {
@@ -31,6 +32,8 @@ export default function ManagerDashboard() {
   const [summary, setSummary] = useState<SummaryData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isApproving, setIsApproving] = useState(false)
+  const [csrfToken, setCsrfToken] = useState<string>('')
 
   const fetchSummary = useCallback(async () => {
     setIsLoading(true)
@@ -67,7 +70,46 @@ export default function ManagerDashboard() {
       return
     }
     fetchSummary()
+    // Fetch CSRF token
+    fetch('/api/csrf')
+      .then((res) => res.json())
+      .then((data: { csrfToken: string }) => {
+        if (data.csrfToken) {
+          setCsrfToken(data.csrfToken)
+        }
+      })
+      .catch(console.error)
   }, [sessionStatus, session, router, fetchSummary])
+
+  const handleBulkApprove = async (ids: string[]) => {
+    if (!csrfToken || ids.length === 0) return
+
+    setIsApproving(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/expenses/bulk-approve', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ids }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.message || 'Failed to approve expenses')
+      }
+
+      // Refresh the data
+      await fetchSummary()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to approve expenses')
+    } finally {
+      setIsApproving(false)
+    }
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('th-TH', {
@@ -189,54 +231,30 @@ export default function ManagerDashboard() {
               </div>
             </div>
 
-            {/* Recent Pending Section */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-lg font-medium text-gray-900">Pending Approvals</h2>
-                    <p className="mt-1 text-sm text-gray-500">
-                      Expenses waiting for your review
-                    </p>
-                  </div>
-                  {summary.counts.pending > 5 && (
-                    <Link
-                      href="/expenses/list?all=true&status=PENDING"
-                      className="text-sm text-green-600 hover:text-green-700 font-medium"
-                    >
-                      View all ({summary.counts.pending})
-                    </Link>
-                  )}
+            {/* Pending Approvals Section */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">Pending Approvals</h2>
+                  <p className="text-sm text-gray-500">
+                    Expenses waiting for your review
+                  </p>
                 </div>
-              </div>
-
-              <div className="p-4">
-                {summary.recentPending.length > 0 ? (
-                  <ExpenseList
-                    expenses={summary.recentPending}
-                    showUser={true}
-                    emptyMessage="No pending expenses"
-                  />
-                ) : (
-                  <div className="text-center py-8">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <h3 className="mt-2 text-sm font-medium text-gray-900">All caught up!</h3>
-                    <p className="mt-1 text-sm text-gray-500">No expenses pending approval.</p>
-                  </div>
+                {summary.counts.pending > 5 && (
+                  <Link
+                    href="/expenses/list?all=true&status=PENDING"
+                    className="text-sm text-green-600 hover:text-green-700 font-medium"
+                  >
+                    View all ({summary.counts.pending})
+                  </Link>
                 )}
               </div>
+
+              <PendingExpenseTable
+                expenses={summary.recentPending}
+                onApproveSelected={handleBulkApprove}
+                isApproving={isApproving}
+              />
             </div>
 
             {/* Quick Actions */}
