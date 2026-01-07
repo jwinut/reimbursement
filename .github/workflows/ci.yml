@@ -291,7 +291,7 @@ jobs:
           docker run -d \
             --name reimbursement-app \
             --restart unless-stopped \
-            -p 3000:3000 \
+            --network host \
             -e DATABASE_URL="${{ vars.DATABASE_URL }}" \
             -e NEXTAUTH_URL="${{ vars.NEXTAUTH_URL }}" \
             -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
