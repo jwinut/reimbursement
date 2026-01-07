@@ -67,9 +67,9 @@ describe('GET /api/expenses/summary', () => {
 
     // Mock aggregates
     vi.mocked(prisma.expense.aggregate)
-      .mockResolvedValueOnce({ _sum: { amount: 500 } })   // pending total
-      .mockResolvedValueOnce({ _sum: { amount: 1000 } })  // approved total
-      .mockResolvedValueOnce({ _sum: { amount: 800 } })   // reimbursed total
+      .mockResolvedValueOnce({ _sum: { amount: 500 } } as any)   // pending total
+      .mockResolvedValueOnce({ _sum: { amount: 1000 } } as any)  // approved total
+      .mockResolvedValueOnce({ _sum: { amount: 800 } } as any)   // reimbursed total
 
     vi.mocked(prisma.expense.findMany).mockResolvedValue([])
 
@@ -99,9 +99,9 @@ describe('GET /api/expenses/summary', () => {
       .mockResolvedValueOnce(4)
 
     vi.mocked(prisma.expense.aggregate)
-      .mockResolvedValueOnce({ _sum: { amount: 300 } })
-      .mockResolvedValueOnce({ _sum: { amount: 500 } })
-      .mockResolvedValueOnce({ _sum: { amount: 400 } })
+      .mockResolvedValueOnce({ _sum: { amount: 300 } } as any)
+      .mockResolvedValueOnce({ _sum: { amount: 500 } } as any)
+      .mockResolvedValueOnce({ _sum: { amount: 400 } } as any)
 
     vi.mocked(prisma.expense.findMany).mockResolvedValue([])
 
@@ -140,8 +140,8 @@ describe('GET /api/expenses/summary', () => {
     })
 
     vi.mocked(prisma.expense.count).mockResolvedValue(0)
-    vi.mocked(prisma.expense.aggregate).mockResolvedValue({ _sum: { amount: null } })
-    vi.mocked(prisma.expense.findMany).mockResolvedValue(mockPendingExpenses)
+    vi.mocked(prisma.expense.aggregate).mockResolvedValue({ _sum: { amount: null } } as any)
+    vi.mocked(prisma.expense.findMany).mockResolvedValue(mockPendingExpenses as any)
 
     const response = await GET()
     const data = await response.json()
@@ -159,8 +159,8 @@ describe('GET /api/expenses/summary', () => {
     })
 
     vi.mocked(prisma.expense.count).mockResolvedValue(0)
-    vi.mocked(prisma.expense.aggregate).mockResolvedValue({ _sum: { amount: null } })
-    vi.mocked(prisma.expense.findMany).mockResolvedValue([])
+    vi.mocked(prisma.expense.aggregate).mockResolvedValue({ _sum: { amount: null } } as any)
+    vi.mocked(prisma.expense.findMany).mockResolvedValue([] as any)
 
     const response = await GET()
     const data = await response.json()
@@ -194,8 +194,8 @@ describe('GET /api/expenses/summary', () => {
     })
 
     vi.mocked(prisma.expense.count).mockResolvedValue(1)
-    vi.mocked(prisma.expense.aggregate).mockResolvedValue({ _sum: { amount: 100 } })
-    vi.mocked(prisma.expense.findMany).mockResolvedValue([mockPendingExpense])
+    vi.mocked(prisma.expense.aggregate).mockResolvedValue({ _sum: { amount: 100 } } as any)
+    vi.mocked(prisma.expense.findMany).mockResolvedValue([mockPendingExpense] as any)
 
     const response = await GET()
     const data = await response.json()

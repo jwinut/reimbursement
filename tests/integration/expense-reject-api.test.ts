@@ -240,7 +240,7 @@ describe('POST /api/expenses/[id]/reject', () => {
       status: ExpenseStatus.REJECTED,
       user: { id: 'user-123', displayName: 'User', pictureUrl: null },
       approver: { id: 'manager-123', displayName: 'Manager' },
-    })
+    } as any)
 
     const request = createRequest('expense-123', { reason: 'Missing documentation' })
     await POST(request, { params: createParams('expense-123') })

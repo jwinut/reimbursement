@@ -207,7 +207,7 @@ describe('GET /api/expenses/[id]', () => {
       amount: 100,
       date: new Date('2024-01-15'),
       imageUrl: null,
-      status: ExpenseStatus.PAID,
+      status: ExpenseStatus.REIMBURSED,
       userId: 'user-123',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -224,7 +224,7 @@ describe('GET /api/expenses/[id]', () => {
       user: { id: 'user-123', role: Role.EMPLOYEE },
       expires: new Date().toISOString(),
     })
-    vi.mocked(prisma.expense.findUnique).mockResolvedValue(mockExpense)
+    vi.mocked(prisma.expense.findUnique).mockResolvedValue(mockExpense as any)
 
     const request = createRequest('expense-123')
     const response = await GET(request, { params: createParams('expense-123') })

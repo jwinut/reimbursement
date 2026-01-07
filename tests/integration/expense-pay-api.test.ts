@@ -158,7 +158,7 @@ describe('POST /api/expenses/[id]/pay', () => {
       ...mockExpense,
       status: ExpenseStatus.REIMBURSED,
       paidDate: new Date(),
-      paidAmount: 100,
+      paidAmount: new Prisma.Decimal(100),
       user: { id: 'user-123', displayName: 'Test User', pictureUrl: null },
       approver: { id: 'manager-123', displayName: 'Test Manager' },
     }
@@ -169,7 +169,7 @@ describe('POST /api/expenses/[id]/pay', () => {
       expires: new Date().toISOString(),
     })
     vi.mocked(prisma.expense.findUnique).mockResolvedValue(mockExpense)
-    vi.mocked(prisma.expense.update).mockResolvedValue(updatedExpense)
+    vi.mocked(prisma.expense.update).mockResolvedValue(updatedExpense as any)
 
     const request = createRequest('expense-123')
     const response = await POST(request, { params: createParams('expense-123') })
@@ -208,7 +208,7 @@ describe('POST /api/expenses/[id]/pay', () => {
       status: ExpenseStatus.REIMBURSED,
       user: { id: 'user-123', displayName: 'User', pictureUrl: null },
       approver: { id: 'manager-123', displayName: 'Manager' },
-    })
+    } as any)
 
     const request = createRequest('expense-123', {})
     await POST(request, { params: createParams('expense-123') })
@@ -253,7 +253,7 @@ describe('POST /api/expenses/[id]/pay', () => {
       status: ExpenseStatus.REIMBURSED,
       user: { id: 'user-123', displayName: 'User', pictureUrl: null },
       approver: { id: 'manager-123', displayName: 'Manager' },
-    })
+    } as any)
 
     const customDate = '2024-02-15'
     const request = createRequest('expense-123', { paidAmount: 95, paidDate: customDate })

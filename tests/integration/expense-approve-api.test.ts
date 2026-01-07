@@ -208,7 +208,7 @@ describe('POST /api/expenses/[id]/approve', () => {
       status: ExpenseStatus.APPROVED,
       user: { id: 'user-123', displayName: 'User', pictureUrl: null },
       approver: { id: 'manager-123', displayName: 'Manager' },
-    })
+    } as any)
 
     const request = createRequest('expense-123')
     await POST(request, { params: createParams('expense-123') })

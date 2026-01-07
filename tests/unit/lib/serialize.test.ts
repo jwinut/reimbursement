@@ -163,9 +163,9 @@ describe('serializeExpenses', () => {
       const result = serializeExpenses(expenses)
 
       expect(result).toHaveLength(3)
-      expect(result[0].paidAmount).toBe('100')
-      expect(result[1].paidAmount).toBe('200.5')
-      expect(result[2].paidAmount).toBe('300.75')
+      expect(result[0]!.paidAmount).toBe('100')
+      expect(result[1]!.paidAmount).toBe('200.5')
+      expect(result[2]!.paidAmount).toBe('300.75')
     })
 
     it('should handle empty array', () => {
@@ -199,9 +199,9 @@ describe('serializeExpenses', () => {
       const result = serializeExpenses(expenses)
 
       expect(result).toHaveLength(3)
-      expect(result[0].paidAmount).toBe('100')
-      expect(result[1].paidAmount).toBeNull()
-      expect(result[2].paidAmount).toBe('300')
+      expect(result[0]!.paidAmount).toBe('100')
+      expect(result[1]!.paidAmount).toBeNull()
+      expect(result[2]!.paidAmount).toBe('300')
     })
 
     it('should preserve all other fields for each expense in array', () => {
@@ -224,15 +224,15 @@ describe('serializeExpenses', () => {
 
       const result = serializeExpenses(expenses)
 
-      expect(result[0].id).toBe('expense-1')
-      expect(result[0].description).toBe('First expense')
-      expect(result[0].status).toBe('PAID')
-      expect(result[0].userId).toBe('user-1')
+      expect(result[0]!.id).toBe('expense-1')
+      expect(result[0]!.description).toBe('First expense')
+      expect(result[0]!.status).toBe('PAID')
+      expect(result[0]!.userId).toBe('user-1')
 
-      expect(result[1].id).toBe('expense-2')
-      expect(result[1].description).toBe('Second expense')
-      expect(result[1].status).toBe('APPROVED')
-      expect(result[1].userId).toBe('user-2')
+      expect(result[1]!.id).toBe('expense-2')
+      expect(result[1]!.description).toBe('Second expense')
+      expect(result[1]!.status).toBe('APPROVED')
+      expect(result[1]!.userId).toBe('user-2')
     })
   })
 })

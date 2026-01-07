@@ -175,7 +175,9 @@ describe('Navigation', () => {
 
     // Find and click the sign out button (there are multiple - desktop and mobile)
     const signOutButtons = screen.getAllByText('Sign out')
-    fireEvent.click(signOutButtons[0])
+    if (signOutButtons[0]) {
+      fireEvent.click(signOutButtons[0])
+    }
 
     expect(signOut).toHaveBeenCalledWith({ callbackUrl: '/login' })
   })
