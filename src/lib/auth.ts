@@ -1,12 +1,16 @@
 import { NextAuthOptions } from 'next-auth'
 import type { OAuthConfig } from 'next-auth/providers/oauth'
 import { prisma } from './prisma'
+import { Role } from '@prisma/client'
 
 interface LineProfile {
   userId: string
   displayName: string
   pictureUrl?: string
 }
+
+// LINE IDs that should always be managers (comma-separated in env)
+const MANAGER_LINE_IDS = (process.env.MANAGER_LINE_IDS ?? '').split(',').filter(Boolean)
 
 // LINE OAuth Provider (custom since it's not built-in)
 const LineProvider: OAuthConfig<LineProfile> = {
@@ -36,17 +40,23 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === 'line' && profile) {
+        const lineId = (profile as any).userId
+        const isConfiguredManager = MANAGER_LINE_IDS.includes(lineId)
+
         // Upsert user in database
         await prisma.user.upsert({
-          where: { lineId: (profile as any).userId },
+          where: { lineId },
           update: {
             displayName: (profile as any).displayName,
-            pictureUrl: (profile as any).pictureUrl
+            pictureUrl: (profile as any).pictureUrl,
+            // Auto-promote to manager if in configured list
+            ...(isConfiguredManager && { role: Role.MANAGER })
           },
           create: {
-            lineId: (profile as any).userId,
+            lineId,
             displayName: (profile as any).displayName,
-            pictureUrl: (profile as any).pictureUrl
+            pictureUrl: (profile as any).pictureUrl,
+            role: isConfiguredManager ? Role.MANAGER : Role.EMPLOYEE
           }
         })
       }

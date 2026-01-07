@@ -297,6 +297,7 @@ jobs:
             -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
             -e LINE_CLIENT_ID="${{ vars.LINE_CLIENT_ID }}" \
             -e LINE_CLIENT_SECRET="${{ secrets.LINE_CLIENT_SECRET }}" \
+            -e MANAGER_LINE_IDS="${{ vars.MANAGER_LINE_IDS }}" \
             ghcr.io/jwinut/reimbursement:latest
 
       - name: Cleanup old images
