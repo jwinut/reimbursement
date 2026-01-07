@@ -11,8 +11,24 @@ export default defineConfig({
     include: ['tests/unit/**/*.test.{ts,tsx}', 'tests/integration/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules/', 'tests/', '*.config.*']
+      reporter: ['text', 'json', 'json-summary', 'html'],
+      exclude: [
+        'node_modules/',
+        'tests/',
+        '*.config.*',
+        '.next/',
+        'coverage/',
+        '**/*.d.ts',
+        'src/app/layout.tsx',
+        'src/app/**/loading.tsx',
+        'src/app/**/error.tsx',
+      ],
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      },
     }
   },
   resolve: {
