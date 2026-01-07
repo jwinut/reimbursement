@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import { isManager, canTransitionTo } from '@/lib/permissions'
 import { validateCsrfToken } from '@/lib/csrf'
 import { ExpenseStatus } from '@prisma/client'
+import { serializeExpense } from '@/lib/serialize'
 
 export async function POST(
   request: NextRequest,
@@ -82,7 +83,7 @@ export async function POST(
       },
     })
 
-    return NextResponse.json(updatedExpense)
+    return NextResponse.json(serializeExpense(updatedExpense))
   } catch (error) {
     console.error('Error approving expense:', error)
     return NextResponse.json(

@@ -1,5 +1,6 @@
-import { ExpenseStatus } from '@prisma/client'
-import { Decimal } from '@prisma/client/runtime/library'
+import { ExpenseStatus, Prisma } from '@prisma/client'
+
+type Decimal = Prisma.Decimal
 
 export interface MockExpense {
   id: string
@@ -97,7 +98,7 @@ export function createReimbursedExpense(overrides?: Partial<MockExpense>): MockE
     approverId: 'manager-123',
     approvalDate: new Date(),
     paidDate: new Date(),
-    paidAmount: new Decimal(100),
+    paidAmount: new Prisma.Decimal(100),
     ...overrides,
   })
 }

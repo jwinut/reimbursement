@@ -253,8 +253,8 @@ describe('Expenses API', () => {
 
     it('should return expenses for authenticated user', async () => {
       const mockExpenses = [
-        { id: '1', description: 'Expense 1', amount: 100 },
-        { id: '2', description: 'Expense 2', amount: 200 },
+        { id: '1', description: 'Expense 1', amount: 100, paidAmount: null },
+        { id: '2', description: 'Expense 2', amount: 200, paidAmount: null },
       ]
 
       ;(getServerSession as any).mockResolvedValue({ user: { id: 'user-123', role: 'EMPLOYEE' } })

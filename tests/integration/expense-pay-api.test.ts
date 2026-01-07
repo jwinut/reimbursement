@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Role, ExpenseStatus } from '@prisma/client'
+import { Role, ExpenseStatus, Prisma } from '@prisma/client'
 import { NextRequest } from 'next/server'
 
 // Mock dependencies
@@ -283,5 +283,49 @@ describe('POST /api/expenses/[id]/pay', () => {
 
     expect(response.status).toBe(400)
     expect(data.message).toBe('Validation error')
+  })
+
+  it('should serialize paidAmount as string in response', async () => {
+    const mockExpense = {
+      id: 'expense-123',
+      status: ExpenseStatus.APPROVED,
+      userId: 'user-123',
+      description: 'Test',
+      amount: 100,
+      date: new Date(),
+      imageUrl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      approverId: 'manager-123',
+      approvalDate: new Date(),
+      rejectionReason: null,
+      paidDate: null,
+      paidAmount: null,
+    }
+
+    const updatedExpense = {
+      ...mockExpense,
+      status: ExpenseStatus.REIMBURSED,
+      paidDate: new Date(),
+      paidAmount: new Prisma.Decimal(150.75),
+      user: { id: 'user-123', displayName: 'Test User', pictureUrl: null },
+      approver: { id: 'manager-123', displayName: 'Test Manager' },
+    }
+
+    vi.mocked(validateCsrfToken).mockReturnValue(true)
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { id: 'manager-123', role: Role.MANAGER },
+      expires: new Date().toISOString(),
+    })
+    vi.mocked(prisma.expense.findUnique).mockResolvedValue(mockExpense)
+    vi.mocked(prisma.expense.update).mockResolvedValue(updatedExpense)
+
+    const request = createRequest('expense-123')
+    const response = await POST(request, { params: createParams('expense-123') })
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(typeof data.paidAmount).toBe('string')
+    expect(data.paidAmount).toBe('150.75')
   })
 })

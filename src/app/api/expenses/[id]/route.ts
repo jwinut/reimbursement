@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { isManager } from '@/lib/permissions'
+import { serializeExpense } from '@/lib/serialize'
 
 export async function GET(
   _request: NextRequest,
@@ -53,7 +54,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(expense)
+    return NextResponse.json(serializeExpense(expense))
   } catch (error) {
     console.error('Error fetching expense:', error)
     return NextResponse.json(

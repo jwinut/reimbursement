@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Role, ExpenseStatus } from '@prisma/client'
+import { Role, ExpenseStatus, Prisma } from '@prisma/client'
 
 // Mock dependencies
 vi.mock('next-auth', () => ({
@@ -198,5 +198,40 @@ describe('GET /api/expenses/[id]', () => {
     expect(response.status).toBe(200)
     expect(data.user).toEqual({ id: 'user-123', displayName: 'Test User', pictureUrl: null })
     expect(data.approver).toEqual({ id: 'manager-123', displayName: 'Test Manager' })
+  })
+
+  it('should return paidAmount as string when expense has been paid', async () => {
+    const mockExpense = {
+      id: 'expense-123',
+      description: 'Paid expense',
+      amount: 100,
+      date: new Date('2024-01-15'),
+      imageUrl: null,
+      status: ExpenseStatus.PAID,
+      userId: 'user-123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      approverId: 'manager-123',
+      approvalDate: new Date(),
+      rejectionReason: null,
+      paidDate: new Date('2024-01-20'),
+      paidAmount: new Prisma.Decimal('150.50'),
+      user: { id: 'user-123', displayName: 'Test User', pictureUrl: null },
+      approver: { id: 'manager-123', displayName: 'Test Manager' },
+    }
+
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { id: 'user-123', role: Role.EMPLOYEE },
+      expires: new Date().toISOString(),
+    })
+    vi.mocked(prisma.expense.findUnique).mockResolvedValue(mockExpense)
+
+    const request = createRequest('expense-123')
+    const response = await GET(request, { params: createParams('expense-123') })
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data.paidAmount).toBe('150.5')
+    expect(typeof data.paidAmount).toBe('string')
   })
 })

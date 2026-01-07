@@ -6,9 +6,11 @@ import { validateCsrfToken } from '@/lib/csrf'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { randomUUID } from 'crypto'
+import sharp from 'sharp'
 import { expenseFilterSchema } from '@/lib/validations'
 import { isManager } from '@/lib/permissions'
 import { Prisma } from '@prisma/client'
+import { serializeExpenses } from '@/lib/serialize'
 
 // Input sanitization helper
 function sanitizeString(input: string): string {
@@ -77,11 +79,11 @@ export async function POST(request: NextRequest) {
     // Handle image upload
     let imageUrl: string | null = null
     if (image && image.size > 0) {
-      // Validate image
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+      // Validate image - accept common formats including iPhone HEIC
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']
       if (!allowedTypes.includes(image.type)) {
         return NextResponse.json(
-          { message: 'Invalid image type. Only JPEG, PNG, and WebP are allowed.' },
+          { message: 'Invalid image type. Only JPEG, PNG, WebP, and HEIC are allowed.' },
           { status: 400 }
         )
       }
@@ -94,18 +96,23 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Generate unique filename
-      const ext = image.name.split('.').pop() || 'jpg'
-      const filename = `${randomUUID()}.${ext}`
+      // Generate unique filename - always save as WebP
+      const filename = `${randomUUID()}.webp`
       const uploadDir = join(process.cwd(), 'uploads')
 
       // Ensure upload directory exists
       await mkdir(uploadDir, { recursive: true })
 
-      // Save file
+      // Convert to WebP with good quality for receipts
       const bytes = await image.arrayBuffer()
       const buffer = Buffer.from(bytes)
-      await writeFile(join(uploadDir, filename), buffer)
+      const webpBuffer = await sharp(buffer)
+        .rotate() // Auto-rotate based on EXIF
+        .resize(2000, 2000, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 85 })
+        .toBuffer()
+
+      await writeFile(join(uploadDir, filename), webpBuffer)
 
       imageUrl = `/uploads/${filename}`
     }
@@ -216,7 +223,7 @@ export async function GET(request: NextRequest) {
     ])
 
     return NextResponse.json({
-      expenses,
+      expenses: serializeExpenses(expenses),
       pagination: {
         page,
         limit,

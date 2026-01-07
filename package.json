@@ -24,6 +24,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.69.0",
+    "sharp": "^0.34.5",
     "zod": "^4.3.4"
   },
   "devDependencies": {

@@ -2,6 +2,16 @@
 const nextConfig = {
   output: 'standalone',
 
+  // Rewrite /uploads/* to /api/uploads/* for image serving
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:filename',
+        destination: '/api/uploads/:filename',
+      },
+    ]
+  },
+
   // Security headers
   async headers() {
     return [

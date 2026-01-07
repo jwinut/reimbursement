@@ -32,17 +32,18 @@ export function createMockRequest(
     requestHeaders.set('Cookie', `csrf-token=${csrfToken}`)
   }
 
-  const init: RequestInit = {
-    method,
-    headers: requestHeaders,
-  }
+  let bodyStr: BodyInit | null = null
 
   if (body && method !== 'GET') {
     requestHeaders.set('Content-Type', 'application/json')
-    init.body = JSON.stringify(body)
+    bodyStr = JSON.stringify(body)
   }
 
-  return new NextRequest(urlObj.toString(), init)
+  return new NextRequest(urlObj.toString(), {
+    method,
+    headers: requestHeaders,
+    body: bodyStr,
+  })
 }
 
 export function createMockFormDataRequest(

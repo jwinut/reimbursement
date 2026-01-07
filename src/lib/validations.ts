@@ -30,8 +30,8 @@ export const expenseSchema = z.object({
       'Image must be less than 5MB'
     )
     .refine(
-      (file) => !file || ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
-      'Only JPEG, PNG, and WebP images are allowed'
+      (file) => !file || ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'].includes(file.type),
+      'Only JPEG, PNG, WebP, and HEIC images are allowed'
     ),
 })
 
