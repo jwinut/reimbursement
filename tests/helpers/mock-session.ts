@@ -7,6 +7,7 @@ export interface MockUser {
   email: string | null
   image: string | null
   role: Role
+  isApproved: boolean
 }
 
 export function createMockSession(overrides?: Partial<MockUser>): Session {
@@ -18,6 +19,7 @@ export function createMockSession(overrides?: Partial<MockUser>): Session {
       email: 'test@example.com',
       image: null,
       role: Role.EMPLOYEE,
+      isApproved: true,
       ...overrides,
     },
   }

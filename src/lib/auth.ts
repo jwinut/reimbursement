@@ -49,14 +49,15 @@ export const authOptions: NextAuthOptions = {
           update: {
             displayName: (profile as any).displayName,
             pictureUrl: (profile as any).pictureUrl,
-            // Auto-promote to manager if in configured list
-            ...(isConfiguredManager && { role: Role.MANAGER })
+            // Auto-promote to manager and auto-approve if in configured list
+            ...(isConfiguredManager && { role: Role.MANAGER, isApproved: true })
           },
           create: {
             lineId,
             displayName: (profile as any).displayName,
             pictureUrl: (profile as any).pictureUrl,
-            role: isConfiguredManager ? Role.MANAGER : Role.EMPLOYEE
+            role: isConfiguredManager ? Role.MANAGER : Role.EMPLOYEE,
+            isApproved: isConfiguredManager // Managers are auto-approved
           }
         })
       }
@@ -70,6 +71,7 @@ export const authOptions: NextAuthOptions = {
         if (user) {
           session.user.id = user.id
           session.user.role = user.role
+          session.user.isApproved = user.isApproved
         }
       }
       return session

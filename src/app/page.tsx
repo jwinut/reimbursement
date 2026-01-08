@@ -10,6 +10,11 @@ export default async function Home() {
     redirect('/login')
   }
 
+  // Check if user is approved
+  if (!session.user.isApproved) {
+    redirect('/pending-approval')
+  }
+
   // Redirect based on user role
   if (session.user.role === Role.MANAGER) {
     redirect('/manager/dashboard')

@@ -45,7 +45,7 @@ describe('Navigation', () => {
   it('should render brand/logo link', () => {
     vi.mocked(useSession).mockReturnValue({
       data: {
-        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE },
+        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE, isApproved: true },
         expires: new Date().toISOString(),
       },
       status: 'authenticated',
@@ -60,7 +60,7 @@ describe('Navigation', () => {
   it('should render "New Expense" nav item for employees', () => {
     vi.mocked(useSession).mockReturnValue({
       data: {
-        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE },
+        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE, isApproved: true },
         expires: new Date().toISOString(),
       },
       status: 'authenticated',
@@ -75,7 +75,7 @@ describe('Navigation', () => {
   it('should render "My Expenses" nav item for employees', () => {
     vi.mocked(useSession).mockReturnValue({
       data: {
-        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE },
+        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE, isApproved: true },
         expires: new Date().toISOString(),
       },
       status: 'authenticated',
@@ -90,7 +90,7 @@ describe('Navigation', () => {
   it('should render "Dashboard" nav item only for managers', () => {
     vi.mocked(useSession).mockReturnValue({
       data: {
-        user: { id: 'manager-123', name: 'Test Manager', role: Role.MANAGER },
+        user: { id: 'manager-123', name: 'Test Manager', role: Role.MANAGER, isApproved: true },
         expires: new Date().toISOString(),
       },
       status: 'authenticated',
@@ -105,7 +105,7 @@ describe('Navigation', () => {
   it('should not render "Dashboard" for employees', () => {
     vi.mocked(useSession).mockReturnValue({
       data: {
-        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE },
+        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE, isApproved: true },
         expires: new Date().toISOString(),
       },
       status: 'authenticated',
@@ -121,7 +121,7 @@ describe('Navigation', () => {
     vi.mocked(usePathname).mockReturnValue('/expenses/list')
     vi.mocked(useSession).mockReturnValue({
       data: {
-        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE },
+        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE, isApproved: true },
         expires: new Date().toISOString(),
       },
       status: 'authenticated',
@@ -146,6 +146,7 @@ describe('Navigation', () => {
           name: 'Test User',
           role: Role.EMPLOYEE,
           image: 'https://example.com/avatar.jpg',
+          isApproved: true,
         },
         expires: new Date().toISOString(),
       },
@@ -164,7 +165,7 @@ describe('Navigation', () => {
   it('should call signOut when clicking sign out button', () => {
     vi.mocked(useSession).mockReturnValue({
       data: {
-        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE },
+        user: { id: 'user-123', name: 'Test User', role: Role.EMPLOYEE, isApproved: true },
         expires: new Date().toISOString(),
       },
       status: 'authenticated',

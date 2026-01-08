@@ -20,6 +20,7 @@ model User {
   displayName String?
   pictureUrl  String?
   role        Role      @default(EMPLOYEE)
+  isApproved  Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
