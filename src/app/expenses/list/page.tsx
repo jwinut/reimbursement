@@ -8,6 +8,7 @@ import { ExpenseStatus } from '@prisma/client'
 import { Navigation } from '@/components/Navigation'
 import { ExpenseList, ExpenseCardData } from '@/components/ExpenseList'
 import { NewExpenseModal } from '@/components/NewExpenseModal'
+import { StatusTabs } from '@/components/StatusTabs'
 import Link from 'next/link'
 
 interface Pagination {
@@ -122,37 +123,18 @@ function ExpenseListContent() {
           </Link>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-          <div className="flex flex-wrap gap-4 items-center">
-            <label className="text-sm font-medium text-gray-700">Filter by status:</label>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => handleStatusFilterChange('')}
-                className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                  statusFilter === ''
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                All
-              </button>
-              {Object.values(ExpenseStatus).map((status) => (
-                <button
-                  key={status}
-                  onClick={() => handleStatusFilterChange(status)}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                    statusFilter === status
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {status.charAt(0) + status.slice(1).toLowerCase()}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Status Filter Tabs */}
+        <StatusTabs
+          value={statusFilter}
+          onChange={(value) => handleStatusFilterChange(value as ExpenseStatus | '')}
+          options={[
+            { value: '', label: 'All' },
+            ...Object.values(ExpenseStatus).map((status) => ({
+              value: status,
+              label: status.charAt(0) + status.slice(1).toLowerCase(),
+            })),
+          ]}
+        />
 
         {/* Error state */}
         {error && (
