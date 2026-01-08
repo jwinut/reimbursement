@@ -9,7 +9,7 @@ export default function LoginPage() {
   const handleLineLogin = async () => {
     setIsLoading(true)
     try {
-      await signIn('line', { callbackUrl: '/expenses/new' })
+      await signIn('line', { callbackUrl: '/expenses/list' })
     } catch (error) {
       console.error('Login failed:', error)
       setIsLoading(false)

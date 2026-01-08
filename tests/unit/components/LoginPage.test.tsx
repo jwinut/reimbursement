@@ -43,7 +43,7 @@ describe('LoginPage', () => {
     const button = screen.getByRole('button', { name: /เข้าสู่ระบบด้วย LINE/i })
     fireEvent.click(button)
 
-    expect(signIn).toHaveBeenCalledWith('line', { callbackUrl: '/expenses/new' })
+    expect(signIn).toHaveBeenCalledWith('line', { callbackUrl: '/expenses/list' })
   })
 
   it('should show loading state when signing in', async () => {

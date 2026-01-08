@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { StatusTabs } from '@/components/StatusTabs'
 
 const mockOptions = [
-  { value: '', label: 'ทั้งหมด' },
   { value: 'PENDING', label: 'รอดำเนินการ' },
   { value: 'APPROVED', label: 'อนุมัติแล้ว' },
   { value: 'REJECTED', label: 'ถูกปฏิเสธ' },
+  { value: '', label: 'ทั้งหมด' },
 ]
 
 describe('StatusTabs', () => {

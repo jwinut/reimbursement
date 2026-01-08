@@ -34,12 +34,13 @@ function ExpenseListContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Filter state
+  // Filter state - default to PENDING, use 'ALL' param to show all
   const [statusFilter, setStatusFilter] = useState<ExpenseStatus | ''>(() => {
     const param = searchParams.get('status')
+    if (param === 'ALL') return ''
     return param && Object.values(ExpenseStatus).includes(param as ExpenseStatus)
       ? (param as ExpenseStatus)
-      : ''
+      : ExpenseStatus.PENDING
   })
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10)
@@ -91,6 +92,8 @@ function ExpenseListContent() {
     const params = new URLSearchParams()
     if (status) {
       params.set('status', status)
+    } else {
+      params.set('status', 'ALL')
     }
     params.set('page', '1')
     router.push(`/expenses/list?${params.toString()}`)
@@ -128,16 +131,11 @@ function ExpenseListContent() {
           value={statusFilter}
           onChange={(value) => handleStatusFilterChange(value as ExpenseStatus | '')}
           options={[
+            { value: 'PENDING', label: 'รอดำเนินการ' },
+            { value: 'APPROVED', label: 'อนุมัติแล้ว' },
+            { value: 'REJECTED', label: 'ปฏิเสธแล้ว' },
+            { value: 'REIMBURSED', label: 'เบิกจ่ายแล้ว' },
             { value: '', label: 'ทั้งหมด' },
-            ...Object.values(ExpenseStatus).map((status) => ({
-              value: status,
-              label: {
-                PENDING: 'รอดำเนินการ',
-                APPROVED: 'อนุมัติแล้ว',
-                REJECTED: 'ปฏิเสธแล้ว',
-                REIMBURSED: 'เบิกจ่ายแล้ว',
-              }[status] || status.charAt(0) + status.slice(1).toLowerCase(),
-            })),
           ]}
         />
 
