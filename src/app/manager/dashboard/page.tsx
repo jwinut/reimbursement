@@ -136,9 +136,9 @@ function ManagerDashboardContent() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Manager Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900">แดชบอร์ดผู้จัดการ</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Overview of expense submissions and approvals
+            ภาพรวมการส่งและอนุมัติค่าใช้จ่าย
           </p>
         </div>
 
@@ -159,7 +159,7 @@ function ManagerDashboardContent() {
                   onClick={fetchSummary}
                   className="mt-2 text-sm text-red-600 underline hover:text-red-500"
                 >
-                  Try again
+                  ลองอีกครั้ง
                 </button>
               </div>
             </div>
@@ -179,7 +179,7 @@ function ManagerDashboardContent() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-yellow-800">Pending</p>
+                    <p className="text-sm font-medium text-yellow-800">รอดำเนินการ</p>
                     <p className="text-2xl font-semibold text-yellow-900">{summary.counts.pending}</p>
                     <p className="text-xs text-yellow-600">{formatCurrency(summary.totals.pending)}</p>
                   </div>
@@ -195,7 +195,7 @@ function ManagerDashboardContent() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-green-800">Approved</p>
+                    <p className="text-sm font-medium text-green-800">อนุมัติแล้ว</p>
                     <p className="text-2xl font-semibold text-green-900">{summary.counts.approved}</p>
                     <p className="text-xs text-green-600">{formatCurrency(summary.totals.approved)}</p>
                   </div>
@@ -211,7 +211,7 @@ function ManagerDashboardContent() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-red-800">Rejected</p>
+                    <p className="text-sm font-medium text-red-800">ถูกปฏิเสธ</p>
                     <p className="text-2xl font-semibold text-red-900">{summary.counts.rejected}</p>
                   </div>
                 </div>
@@ -226,7 +226,7 @@ function ManagerDashboardContent() {
                     </svg>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-blue-800">Reimbursed</p>
+                    <p className="text-sm font-medium text-blue-800">เบิกแล้ว</p>
                     <p className="text-2xl font-semibold text-blue-900">{summary.counts.reimbursed}</p>
                     <p className="text-xs text-blue-600">{formatCurrency(summary.totals.reimbursed)}</p>
                   </div>
@@ -238,9 +238,9 @@ function ManagerDashboardContent() {
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <h2 className="text-lg font-medium text-gray-900">Pending Approvals</h2>
+                  <h2 className="text-lg font-medium text-gray-900">รอการอนุมัติ</h2>
                   <p className="text-sm text-gray-500">
-                    Expenses waiting for your review
+                    ค่าใช้จ่ายที่รอการตรวจสอบ
                   </p>
                 </div>
                 {summary.counts.pending > 5 && (
@@ -248,7 +248,7 @@ function ManagerDashboardContent() {
                     href="/expenses/list?all=true&status=PENDING"
                     className="text-sm text-green-600 hover:text-green-700 font-medium"
                   >
-                    View all ({summary.counts.pending})
+                    ดูทั้งหมด ({summary.counts.pending})
                   </Link>
                 )}
               </div>
@@ -272,8 +272,8 @@ function ManagerDashboardContent() {
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-900">Review Pending</p>
-                  <p className="text-xs text-gray-500">View all pending expenses</p>
+                  <p className="text-sm font-medium text-gray-900">ตรวจสอบรายการรอ</p>
+                  <p className="text-xs text-gray-500">ดูค่าใช้จ่ายที่รอทั้งหมด</p>
                 </div>
               </Link>
 
@@ -287,8 +287,8 @@ function ManagerDashboardContent() {
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-900">Process Payments</p>
-                  <p className="text-xs text-gray-500">Mark approved as reimbursed</p>
+                  <p className="text-sm font-medium text-gray-900">ดำเนินการจ่ายเงิน</p>
+                  <p className="text-xs text-gray-500">ทำเครื่องหมายว่าเบิกแล้ว</p>
                 </div>
               </Link>
             </div>

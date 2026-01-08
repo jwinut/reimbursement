@@ -22,8 +22,8 @@ describe('ApprovalActions', () => {
       />
     )
 
-    expect(screen.getByText('Approve')).toBeInTheDocument()
-    expect(screen.getByText('Reject')).toBeInTheDocument()
+    expect(screen.getByText('อนุมัติ')).toBeInTheDocument()
+    expect(screen.getByText('ปฏิเสธ')).toBeInTheDocument()
   })
 
   it('should render Mark as Paid button for APPROVED status', () => {
@@ -35,9 +35,9 @@ describe('ApprovalActions', () => {
       />
     )
 
-    expect(screen.getByText('Mark as Paid')).toBeInTheDocument()
-    expect(screen.queryByText('Approve')).not.toBeInTheDocument()
-    expect(screen.queryByText('Reject')).not.toBeInTheDocument()
+    expect(screen.getByText('ทำเครื่องหมายว่าจ่ายแล้ว')).toBeInTheDocument()
+    expect(screen.queryByText('อนุมัติ')).not.toBeInTheDocument()
+    expect(screen.queryByText('ปฏิเสธ')).not.toBeInTheDocument()
   })
 
   it('should return null for REJECTED status', () => {
@@ -78,7 +78,7 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Approve'))
+    fireEvent.click(screen.getByText('อนุมัติ'))
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
@@ -109,7 +109,7 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Approve'))
+    fireEvent.click(screen.getByText('อนุมัติ'))
 
     await waitFor(() => {
       expect(onActionComplete).toHaveBeenCalledWith(ExpenseStatus.APPROVED)
@@ -125,10 +125,10 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Reject'))
+    fireEvent.click(screen.getByText('ปฏิเสธ'))
 
-    expect(screen.getByRole('heading', { name: 'Reject Expense' })).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('Please provide a reason for rejection...')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'ปฏิเสธค่าใช้จ่าย' })).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('กรุณาระบุเหตุผลในการปฏิเสธ...')).toBeInTheDocument()
   })
 
   it('should require rejection reason before submitting', async () => {
@@ -143,12 +143,12 @@ describe('ApprovalActions', () => {
     )
 
     // Open modal
-    fireEvent.click(screen.getByText('Reject'))
+    fireEvent.click(screen.getByText('ปฏิเสธ'))
 
     // Try to reject without reason (button should be disabled)
     // Find the submit button in the modal (not the heading)
     const buttons = screen.getAllByRole('button')
-    const rejectSubmitButton = buttons.find(btn => btn.textContent === 'Reject Expense')
+    const rejectSubmitButton = buttons.find(btn => btn.textContent === 'ปฏิเสธค่าใช้จ่าย')
     expect(rejectSubmitButton).toBeDisabled()
   })
 
@@ -167,15 +167,15 @@ describe('ApprovalActions', () => {
     )
 
     // Open modal
-    fireEvent.click(screen.getByText('Reject'))
+    fireEvent.click(screen.getByText('ปฏิเสธ'))
 
     // Enter reason
-    const textarea = screen.getByPlaceholderText('Please provide a reason for rejection...')
+    const textarea = screen.getByPlaceholderText('กรุณาระบุเหตุผลในการปฏิเสธ...')
     await userEvent.type(textarea, 'Missing receipt')
 
     // Submit - find the submit button explicitly
     const buttons = screen.getAllByRole('button')
-    const rejectSubmitButton = buttons.find(btn => btn.textContent === 'Reject Expense')
+    const rejectSubmitButton = buttons.find(btn => btn.textContent === 'ปฏิเสธค่าใช้จ่าย')
     fireEvent.click(rejectSubmitButton!)
 
     await waitFor(() => {
@@ -208,13 +208,13 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Reject'))
-    const textarea = screen.getByPlaceholderText('Please provide a reason for rejection...')
+    fireEvent.click(screen.getByText('ปฏิเสธ'))
+    const textarea = screen.getByPlaceholderText('กรุณาระบุเหตุผลในการปฏิเสธ...')
     await userEvent.type(textarea, 'Test reason')
 
     // Find the submit button explicitly
     const buttons = screen.getAllByRole('button')
-    const rejectSubmitButton = buttons.find(btn => btn.textContent === 'Reject Expense')
+    const rejectSubmitButton = buttons.find(btn => btn.textContent === 'ปฏิเสธค่าใช้จ่าย')
     fireEvent.click(rejectSubmitButton!)
 
     await waitFor(() => {
@@ -236,7 +236,7 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Mark as Paid'))
+    fireEvent.click(screen.getByText('ทำเครื่องหมายว่าจ่ายแล้ว'))
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
@@ -267,7 +267,7 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Mark as Paid'))
+    fireEvent.click(screen.getByText('ทำเครื่องหมายว่าจ่ายแล้ว'))
 
     await waitFor(() => {
       expect(onActionComplete).toHaveBeenCalledWith(ExpenseStatus.REIMBURSED)
@@ -290,7 +290,7 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Approve'))
+    fireEvent.click(screen.getByText('อนุมัติ'))
 
     await waitFor(() => {
       expect(onError).toHaveBeenCalledWith('Something went wrong')
@@ -316,7 +316,7 @@ describe('ApprovalActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Approve'))
+    fireEvent.click(screen.getByText('อนุมัติ'))
 
     // Buttons should be disabled while loading
     await waitFor(() => {
@@ -340,24 +340,24 @@ describe('ApprovalActions', () => {
     )
 
     // Open modal
-    fireEvent.click(screen.getByText('Reject'))
+    fireEvent.click(screen.getByText('ปฏิเสธ'))
 
     // Modal heading should be visible
-    expect(screen.getByRole('heading', { name: 'Reject Expense' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'ปฏิเสธค่าใช้จ่าย' })).toBeInTheDocument()
 
     // Enter some text
-    const textarea = screen.getByPlaceholderText('Please provide a reason for rejection...')
+    const textarea = screen.getByPlaceholderText('กรุณาระบุเหตุผลในการปฏิเสธ...')
     await userEvent.type(textarea, 'Some reason')
 
     // Click cancel
-    fireEvent.click(screen.getByText('Cancel'))
+    fireEvent.click(screen.getByText('ยกเลิก'))
 
     // Modal should be closed - heading should not be visible
-    expect(screen.queryByRole('heading', { name: 'Reject Expense' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'ปฏิเสธค่าใช้จ่าย' })).not.toBeInTheDocument()
 
     // Reopen modal - reason should be cleared
-    fireEvent.click(screen.getByText('Reject'))
-    const newTextarea = screen.getByPlaceholderText('Please provide a reason for rejection...')
+    fireEvent.click(screen.getByText('ปฏิเสธ'))
+    const newTextarea = screen.getByPlaceholderText('กรุณาระบุเหตุผลในการปฏิเสธ...')
     expect(newTextarea).toHaveValue('')
   })
 })

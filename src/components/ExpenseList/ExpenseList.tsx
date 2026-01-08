@@ -67,7 +67,7 @@ export function ExpenseList({
           />
         </svg>
         <h3 className="mt-2 text-sm font-medium text-gray-900">{emptyMessage}</h3>
-        <p className="mt-1 text-sm text-gray-500">Get started by creating a new expense.</p>
+        <p className="mt-1 text-sm text-gray-500">เริ่มต้นด้วยการสร้างค่าใช้จ่ายใหม่</p>
       </div>
     )
   }
@@ -95,28 +95,28 @@ export function ExpenseList({
               disabled={pagination.page <= 1}
               className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Previous
+              ก่อนหน้า
             </button>
             <button
               onClick={() => onPageChange?.(pagination.page + 1)}
               disabled={pagination.page >= pagination.totalPages}
               className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next
+              ถัดไป
             </button>
           </div>
           <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-gray-700">
-                Showing{' '}
+                แสดง{' '}
                 <span className="font-medium">
                   {(pagination.page - 1) * pagination.limit + 1}
                 </span>{' '}
-                to{' '}
+                ถึง{' '}
                 <span className="font-medium">
                   {Math.min(pagination.page * pagination.limit, pagination.total)}
                 </span>{' '}
-                of <span className="font-medium">{pagination.total}</span> results
+                จาก <span className="font-medium">{pagination.total}</span> รายการ
               </p>
             </div>
             <div>
@@ -126,7 +126,7 @@ export function ExpenseList({
                   disabled={pagination.page <= 1}
                   className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="sr-only">Previous</span>
+                  <span className="sr-only">ก่อนหน้า</span>
                   <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path
                       fillRule="evenodd"
@@ -143,7 +143,7 @@ export function ExpenseList({
                   disabled={pagination.page >= pagination.totalPages}
                   className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="sr-only">Next</span>
+                  <span className="sr-only">ถัดไป</span>
                   <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path
                       fillRule="evenodd"

@@ -4,27 +4,27 @@ import userEvent from '@testing-library/user-event'
 import { StatusTabs } from '@/components/StatusTabs'
 
 const mockOptions = [
-  { value: '', label: 'All' },
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'APPROVED', label: 'Approved' },
-  { value: 'REJECTED', label: 'Rejected' },
+  { value: '', label: 'ทั้งหมด' },
+  { value: 'PENDING', label: 'รอดำเนินการ' },
+  { value: 'APPROVED', label: 'อนุมัติแล้ว' },
+  { value: 'REJECTED', label: 'ถูกปฏิเสธ' },
 ]
 
 describe('StatusTabs', () => {
   it('should render all tab options', () => {
     render(<StatusTabs value="" onChange={() => {}} options={mockOptions} />)
 
-    expect(screen.getByText('All')).toBeInTheDocument()
-    expect(screen.getByText('Pending')).toBeInTheDocument()
-    expect(screen.getByText('Approved')).toBeInTheDocument()
-    expect(screen.getByText('Rejected')).toBeInTheDocument()
+    expect(screen.getByText('ทั้งหมด')).toBeInTheDocument()
+    expect(screen.getByText('รอดำเนินการ')).toBeInTheDocument()
+    expect(screen.getByText('อนุมัติแล้ว')).toBeInTheDocument()
+    expect(screen.getByText('ถูกปฏิเสธ')).toBeInTheDocument()
   })
 
   it('should show active state for selected tab', () => {
     render(<StatusTabs value="PENDING" onChange={() => {}} options={mockOptions} />)
 
-    const pendingTab = screen.getByText('Pending')
-    const allTab = screen.getByText('All')
+    const pendingTab = screen.getByText('รอดำเนินการ')
+    const allTab = screen.getByText('ทั้งหมด')
 
     expect(pendingTab).toHaveClass('border-green-600')
     expect(pendingTab).toHaveClass('text-green-600')
@@ -38,7 +38,7 @@ describe('StatusTabs', () => {
 
     render(<StatusTabs value="" onChange={handleChange} options={mockOptions} />)
 
-    await user.click(screen.getByText('Approved'))
+    await user.click(screen.getByText('อนุมัติแล้ว'))
 
     expect(handleChange).toHaveBeenCalledWith('APPROVED')
   })
@@ -52,17 +52,17 @@ describe('StatusTabs', () => {
     const tabs = screen.getAllByRole('tab')
     expect(tabs).toHaveLength(4)
 
-    const pendingTab = screen.getByText('Pending')
+    const pendingTab = screen.getByText('รอดำเนินการ')
     expect(pendingTab).toHaveAttribute('aria-selected', 'true')
 
-    const allTab = screen.getByText('All')
+    const allTab = screen.getByText('ทั้งหมด')
     expect(allTab).toHaveAttribute('aria-selected', 'false')
   })
 
-  it('should show "All" as active when value is empty string', () => {
+  it('should show "ทั้งหมด" as active when value is empty string', () => {
     render(<StatusTabs value="" onChange={() => {}} options={mockOptions} />)
 
-    const allTab = screen.getByText('All')
+    const allTab = screen.getByText('ทั้งหมด')
     expect(allTab).toHaveClass('border-green-600')
     expect(allTab).toHaveClass('text-green-600')
   })

@@ -70,8 +70,8 @@ export function PendingExpenseTable({
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-gray-900">All caught up!</h3>
-        <p className="mt-1 text-sm text-gray-500">No expenses pending approval.</p>
+        <h3 className="mt-2 text-sm font-medium text-gray-900">เรียบร้อย!</h3>
+        <p className="mt-1 text-sm text-gray-500">ไม่มีค่าใช้จ่ายรอการอนุมัติ</p>
       </div>
     )
   }
@@ -90,7 +90,7 @@ export function PendingExpenseTable({
             onChange={toggleAll}
             className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
           />
-          Select all ({expenses.length})
+          เลือกทั้งหมด ({expenses.length})
         </label>
         {selected.size > 0 && (
           <button
@@ -98,7 +98,7 @@ export function PendingExpenseTable({
             disabled={isApproving}
             className="px-3 py-1.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-sm font-medium rounded-lg transition-colors"
           >
-            {isApproving ? 'Approving...' : `Approve (${selected.size})`}
+            {isApproving ? 'กำลังอนุมัติ...' : `อนุมัติ (${selected.size})`}
           </button>
         )}
       </div>

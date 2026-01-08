@@ -15,7 +15,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     href: '/expenses/new',
-    label: 'New Expense',
+    label: 'สร้างรายการใหม่',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -24,7 +24,7 @@ const navItems: NavItem[] = [
   },
   {
     href: '/expenses/list',
-    label: 'My Expenses',
+    label: 'ค่าใช้จ่ายของฉัน',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -38,7 +38,7 @@ const navItems: NavItem[] = [
   },
   {
     href: '/manager/dashboard',
-    label: 'Dashboard',
+    label: 'แดชบอร์ด',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -79,7 +79,7 @@ export function Navigation() {
           {/* Logo / Brand */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="text-lg font-semibold text-gray-900">Reimbursement</span>
+              <span className="text-lg font-semibold text-gray-900">เบิกค่าใช้จ่าย</span>
             </Link>
           </div>
 
@@ -127,7 +127,7 @@ export function Navigation() {
                 onClick={handleSignOut}
                 className="ml-4 text-sm text-gray-500 hover:text-gray-700"
               >
-                Sign out
+                ออกจากระบบ
               </button>
             </div>
           </div>
@@ -164,7 +164,7 @@ export function Navigation() {
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
               />
             </svg>
-            <span className="text-xs mt-1">Sign out</span>
+            <span className="text-xs mt-1">ออกจากระบบ</span>
           </button>
         </div>
       </div>

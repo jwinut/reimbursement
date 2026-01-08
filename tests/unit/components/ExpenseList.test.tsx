@@ -34,7 +34,7 @@ describe('ExpenseList', () => {
     render(<ExpenseList expenses={[]} emptyMessage="No pending expenses" />)
 
     expect(screen.getByText('No pending expenses')).toBeInTheDocument()
-    expect(screen.getByText('Get started by creating a new expense.')).toBeInTheDocument()
+    expect(screen.getByText('เริ่มต้นด้วยการสร้างค่าใช้จ่ายใหม่')).toBeInTheDocument()
   })
 
   it('should render list of expense cards', () => {
@@ -82,7 +82,7 @@ describe('ExpenseList', () => {
 
     // Find the desktop next button (hidden on mobile)
     const nextButtons = screen.getAllByRole('button')
-    const nextButton = nextButtons.find((btn) => btn.textContent === 'Next')
+    const nextButton = nextButtons.find((btn) => btn.textContent === 'ถัดไป')
     if (nextButton) {
       fireEvent.click(nextButton)
     }
@@ -104,7 +104,7 @@ describe('ExpenseList', () => {
     )
 
     const prevButtons = screen.getAllByRole('button')
-    const prevButton = prevButtons.find((btn) => btn.textContent === 'Previous')
+    const prevButton = prevButtons.find((btn) => btn.textContent === 'ก่อนหน้า')
     if (prevButton) {
       fireEvent.click(prevButton)
     }
@@ -119,7 +119,7 @@ describe('ExpenseList', () => {
     render(<ExpenseList expenses={expenses} pagination={pagination} />)
 
     const prevButtons = screen.getAllByRole('button')
-    const prevButton = prevButtons.find((btn) => btn.textContent === 'Previous')
+    const prevButton = prevButtons.find((btn) => btn.textContent === 'ก่อนหน้า')
 
     expect(prevButton).toBeDisabled()
   })
@@ -131,7 +131,7 @@ describe('ExpenseList', () => {
     render(<ExpenseList expenses={expenses} pagination={pagination} />)
 
     const nextButtons = screen.getAllByRole('button')
-    const nextButton = nextButtons.find((btn) => btn.textContent === 'Next')
+    const nextButton = nextButtons.find((btn) => btn.textContent === 'ถัดไป')
 
     expect(nextButton).toBeDisabled()
   })

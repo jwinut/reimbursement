@@ -51,7 +51,7 @@ describe('ExpenseCard', () => {
     const expense = createMockExpense({ status: ExpenseStatus.APPROVED })
     render(<ExpenseCard expense={expense} />)
 
-    expect(screen.getByText('Approved')).toBeInTheDocument()
+    expect(screen.getByText('อนุมัติแล้ว')).toBeInTheDocument()
   })
 
   it('should render image icon when imageUrl exists', () => {
@@ -106,7 +106,7 @@ describe('ExpenseCard', () => {
     render(<ExpenseCard expense={expense} />)
 
     expect(screen.getByText('Missing receipt')).toBeInTheDocument()
-    expect(screen.getByText('Reason:')).toBeInTheDocument()
+    expect(screen.getByText('เหตุผล:')).toBeInTheDocument()
   })
 
   it('should render approver info for APPROVED status', () => {
@@ -120,7 +120,7 @@ describe('ExpenseCard', () => {
     render(<ExpenseCard expense={expense} />)
 
     expect(screen.getByText('Jane Manager')).toBeInTheDocument()
-    expect(screen.getByText('Approved by:')).toBeInTheDocument()
+    expect(screen.getByText('อนุมัติโดย:')).toBeInTheDocument()
   })
 
   it('should render as Link when no onClick provided', () => {

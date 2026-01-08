@@ -6,8 +6,8 @@ import { Providers } from '@/components/Providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Reimbursement',
-  description: 'Expense reimbursement application',
+  title: 'ระบบเบิกค่าใช้จ่าย',
+  description: 'แอปพลิเคชันเบิกค่าใช้จ่าย',
 }
 
 export default function RootLayout({

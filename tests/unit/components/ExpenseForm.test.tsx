@@ -32,17 +32,17 @@ describe('ExpenseForm', () => {
   it('should render all form fields', () => {
     render(<ExpenseForm />)
 
-    expect(screen.getByLabelText(/description/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/amount/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/date/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/receipt image/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /submit expense/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/รายละเอียด/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/จำนวนเงิน \(บาท\)/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/วันที่/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/รูปใบเสร็จ/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /ส่งค่าใช้จ่าย/i })).toBeInTheDocument()
   })
 
   it('should show validation errors for empty required fields', async () => {
     render(<ExpenseForm />)
 
-    const submitButton = screen.getByRole('button', { name: /submit expense/i })
+    const submitButton = screen.getByRole('button', { name: /ส่งค่าใช้จ่าย/i })
     fireEvent.click(submitButton)
 
     await waitFor(() => {
@@ -54,10 +54,10 @@ describe('ExpenseForm', () => {
     const user = userEvent.setup()
     render(<ExpenseForm />)
 
-    await user.type(screen.getByLabelText(/description/i), 'Test expense')
-    await user.type(screen.getByLabelText(/amount/i), '-100')
+    await user.type(screen.getByLabelText(/รายละเอียด/i), 'Test expense')
+    await user.type(screen.getByLabelText(/จำนวนเงิน \(บาท\)/i), '-100')
 
-    const submitButton = screen.getByRole('button', { name: /submit expense/i })
+    const submitButton = screen.getByRole('button', { name: /ส่งค่าใช้จ่าย/i })
     await user.click(submitButton)
 
     await waitFor(() => {
@@ -70,10 +70,10 @@ describe('ExpenseForm', () => {
     const onSuccess = vi.fn()
     render(<ExpenseForm onSuccess={onSuccess} />)
 
-    await user.type(screen.getByLabelText(/description/i), 'Lunch meeting')
-    await user.type(screen.getByLabelText(/amount/i), '250')
+    await user.type(screen.getByLabelText(/รายละเอียด/i), 'Lunch meeting')
+    await user.type(screen.getByLabelText(/จำนวนเงิน \(บาท\)/i), '250')
 
-    const submitButton = screen.getByRole('button', { name: /submit expense/i })
+    const submitButton = screen.getByRole('button', { name: /ส่งค่าใช้จ่าย/i })
     await user.click(submitButton)
 
     await waitFor(() => {
@@ -93,10 +93,10 @@ describe('ExpenseForm', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/csrf')
     })
 
-    await user.type(screen.getByLabelText(/description/i), 'Test expense')
-    await user.type(screen.getByLabelText(/amount/i), '100')
+    await user.type(screen.getByLabelText(/รายละเอียด/i), 'Test expense')
+    await user.type(screen.getByLabelText(/จำนวนเงิน \(บาท\)/i), '100')
 
-    const submitButton = screen.getByRole('button', { name: /submit expense/i })
+    const submitButton = screen.getByRole('button', { name: /ส่งค่าใช้จ่าย/i })
     await user.click(submitButton)
 
     await waitFor(() => {
@@ -127,14 +127,14 @@ describe('ExpenseForm', () => {
 
     render(<ExpenseForm />)
 
-    await user.type(screen.getByLabelText(/description/i), 'Test')
-    await user.type(screen.getByLabelText(/amount/i), '100')
+    await user.type(screen.getByLabelText(/รายละเอียด/i), 'Test')
+    await user.type(screen.getByLabelText(/จำนวนเงิน \(บาท\)/i), '100')
 
-    const submitButton = screen.getByRole('button', { name: /submit expense/i })
+    const submitButton = screen.getByRole('button', { name: /ส่งค่าใช้จ่าย/i })
     await user.click(submitButton)
 
     await waitFor(() => {
-      expect(screen.getByText(/submitting/i)).toBeInTheDocument()
+      expect(screen.getByText(/กำลังส่ง/i)).toBeInTheDocument()
     })
   })
 
@@ -155,10 +155,10 @@ describe('ExpenseForm', () => {
 
     render(<ExpenseForm />)
 
-    await user.type(screen.getByLabelText(/description/i), 'Test')
-    await user.type(screen.getByLabelText(/amount/i), '100')
+    await user.type(screen.getByLabelText(/รายละเอียด/i), 'Test')
+    await user.type(screen.getByLabelText(/จำนวนเงิน \(บาท\)/i), '100')
 
-    const submitButton = screen.getByRole('button', { name: /submit expense/i })
+    const submitButton = screen.getByRole('button', { name: /ส่งค่าใช้จ่าย/i })
     await user.click(submitButton)
 
     await waitFor(() => {

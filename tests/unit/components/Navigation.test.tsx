@@ -54,7 +54,7 @@ describe('Navigation', () => {
 
     render(<Navigation />)
 
-    expect(screen.getByText('Reimbursement')).toBeInTheDocument()
+    expect(screen.getByText('เบิกค่าใช้จ่าย')).toBeInTheDocument()
   })
 
   it('should render "New Expense" nav item for employees', () => {
@@ -69,7 +69,7 @@ describe('Navigation', () => {
 
     render(<Navigation />)
 
-    expect(screen.getAllByText('New Expense').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('สร้างรายการใหม่').length).toBeGreaterThan(0)
   })
 
   it('should render "My Expenses" nav item for employees', () => {
@@ -84,7 +84,7 @@ describe('Navigation', () => {
 
     render(<Navigation />)
 
-    expect(screen.getAllByText('My Expenses').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('ค่าใช้จ่ายของฉัน').length).toBeGreaterThan(0)
   })
 
   it('should render "Dashboard" nav item only for managers', () => {
@@ -99,7 +99,7 @@ describe('Navigation', () => {
 
     render(<Navigation />)
 
-    expect(screen.getAllByText('Dashboard').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('แดชบอร์ด').length).toBeGreaterThan(0)
   })
 
   it('should not render "Dashboard" for employees', () => {
@@ -114,7 +114,7 @@ describe('Navigation', () => {
 
     render(<Navigation />)
 
-    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument()
+    expect(screen.queryByText('แดชบอร์ด')).not.toBeInTheDocument()
   })
 
   it('should highlight active nav item based on pathname', () => {
@@ -174,7 +174,7 @@ describe('Navigation', () => {
     render(<Navigation />)
 
     // Find and click the sign out button (there are multiple - desktop and mobile)
-    const signOutButtons = screen.getAllByText('Sign out')
+    const signOutButtons = screen.getAllByText('ออกจากระบบ')
     if (signOutButtons[0]) {
       fireEvent.click(signOutButtons[0])
     }

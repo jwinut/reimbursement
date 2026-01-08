@@ -100,7 +100,7 @@ export function ExpenseCard({ expense, showUser = false, onClick }: ExpenseCardP
       {expense.status === ExpenseStatus.REJECTED && expense.rejectionReason && (
         <div className="mt-2 pt-2 border-t border-gray-100">
           <p className="text-xs text-red-600">
-            <span className="font-medium">Reason:</span> {expense.rejectionReason}
+            <span className="font-medium">เหตุผล:</span> {expense.rejectionReason}
           </p>
         </div>
       )}
@@ -108,7 +108,7 @@ export function ExpenseCard({ expense, showUser = false, onClick }: ExpenseCardP
       {expense.status === ExpenseStatus.APPROVED && expense.approver && (
         <div className="mt-2 pt-2 border-t border-gray-100">
           <p className="text-xs text-green-600">
-            <span className="font-medium">Approved by:</span> {expense.approver.displayName || 'Manager'}
+            <span className="font-medium">อนุมัติโดย:</span> {expense.approver.displayName || 'Manager'}
           </p>
         </div>
       )}

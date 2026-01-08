@@ -56,21 +56,21 @@ export default function ExpenseDetailPage() {
     try {
       const response = await fetch(`/api/expenses/${expenseId}`)
       if (response.status === 404) {
-        setError('Expense not found')
+        setError('ไม่พบค่าใช้จ่าย')
         return
       }
       if (response.status === 403) {
-        setError('You do not have permission to view this expense')
+        setError('คุณไม่มีสิทธิ์ดูค่าใช้จ่ายนี้')
         return
       }
       if (!response.ok) {
-        throw new Error('Failed to fetch expense')
+        throw new Error('ไม่สามารถโหลดค่าใช้จ่าย')
       }
 
       const data: ExpenseDetail = await response.json()
       setExpense(data)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
     } finally {
       setIsLoading(false)
     }
@@ -158,7 +158,7 @@ export default function ExpenseDetailPage() {
           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to expenses
+          กลับไปค่าใช้จ่าย
         </Link>
 
         {/* Error state */}
@@ -187,7 +187,7 @@ export default function ExpenseDetailPage() {
                 <div>
                   <h1 className="text-xl font-semibold text-gray-900">{expense.description}</h1>
                   <p className="mt-1 text-sm text-gray-500">
-                    Submitted on {formatDateTime(expense.createdAt)}
+                    ส่งเมื่อ {formatDateTime(expense.createdAt)}
                   </p>
                 </div>
                 <StatusBadge status={expense.status} />
@@ -199,13 +199,13 @@ export default function ExpenseDetailPage() {
               {/* Amount and Date */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-500">Amount</label>
+                  <label className="block text-sm font-medium text-gray-500">จำนวนเงิน</label>
                   <p className="mt-1 text-2xl font-semibold text-gray-900">
                     {formatCurrency(expense.amount)}
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-500">Expense Date</label>
+                  <label className="block text-sm font-medium text-gray-500">วันที่ใช้จ่าย</label>
                   <p className="mt-1 text-lg text-gray-900">{formatDate(expense.date)}</p>
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function ExpenseDetailPage() {
               {/* Submitter info (for managers) */}
               {isManager && expense.user && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-2">Submitted by</label>
+                  <label className="block text-sm font-medium text-gray-500 mb-2">ส่งโดย</label>
                   <div className="flex items-center">
                     {expense.user.pictureUrl ? (
                       <img
@@ -236,7 +236,7 @@ export default function ExpenseDetailPage() {
               {/* Receipt image */}
               {expense.imageUrl && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-2">Receipt</label>
+                  <label className="block text-sm font-medium text-gray-500 mb-2">ใบเสร็จ</label>
                   <a
                     href={expense.imageUrl}
                     target="_blank"
@@ -257,10 +257,10 @@ export default function ExpenseDetailPage() {
                 <div className="bg-gray-50 rounded-lg p-4">
                   <label className="block text-sm font-medium text-gray-500 mb-2">
                     {expense.status === ExpenseStatus.APPROVED
-                      ? 'Approved by'
+                      ? 'อนุมัติโดย'
                       : expense.status === ExpenseStatus.REJECTED
-                      ? 'Rejected by'
-                      : 'Processed by'}
+                      ? 'ปฏิเสธโดย'
+                      : 'ดำเนินการโดย'}
                   </label>
                   <p className="text-gray-900">{expense.approver.displayName || 'Manager'}</p>
                   {expense.approvalDate && (
@@ -272,7 +272,7 @@ export default function ExpenseDetailPage() {
               {/* Rejection reason */}
               {expense.status === ExpenseStatus.REJECTED && expense.rejectionReason && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <label className="block text-sm font-medium text-red-800 mb-1">Rejection Reason</label>
+                  <label className="block text-sm font-medium text-red-800 mb-1">เหตุผลที่ปฏิเสธ</label>
                   <p className="text-red-700">{expense.rejectionReason}</p>
                 </div>
               )}
@@ -280,13 +280,13 @@ export default function ExpenseDetailPage() {
               {/* Payment info */}
               {expense.status === ExpenseStatus.REIMBURSED && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <label className="block text-sm font-medium text-blue-800 mb-2">Payment Details</label>
+                  <label className="block text-sm font-medium text-blue-800 mb-2">รายละเอียดการจ่ายเงิน</label>
                   {expense.paidDate && (
-                    <p className="text-blue-700">Paid on {formatDate(expense.paidDate)}</p>
+                    <p className="text-blue-700">จ่ายเมื่อ {formatDate(expense.paidDate)}</p>
                   )}
                   {expense.paidAmount && (
                     <p className="text-blue-900 font-semibold mt-1">
-                      Amount paid: {formatCurrency(expense.paidAmount)}
+                      จำนวนที่จ่าย: {formatCurrency(expense.paidAmount)}
                     </p>
                   )}
                 </div>

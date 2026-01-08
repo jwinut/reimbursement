@@ -23,9 +23,9 @@ export function NewExpenseModal({ basePath }: NewExpenseModalProps) {
   return (
     <Modal onClose={handleClose}>
       <div className="p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">New Expense</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">สร้างค่าใช้จ่ายใหม่</h2>
         <p className="text-sm text-gray-600 mb-6">
-          Submit a new expense for reimbursement
+          ส่งค่าใช้จ่ายใหม่เพื่อเบิกเงิน
         </p>
         <ExpenseForm onSuccess={handleSuccess} />
       </div>

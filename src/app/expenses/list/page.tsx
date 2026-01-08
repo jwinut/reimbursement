@@ -111,7 +111,7 @@ function ExpenseListContent() {
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">My Expenses</h1>
+          <h1 className="text-2xl font-bold text-gray-900">ค่าใช้จ่ายของฉัน</h1>
           <Link
             href="/expenses/new"
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
@@ -119,7 +119,7 @@ function ExpenseListContent() {
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            New Expense
+            สร้างรายการใหม่
           </Link>
         </div>
 
@@ -128,10 +128,15 @@ function ExpenseListContent() {
           value={statusFilter}
           onChange={(value) => handleStatusFilterChange(value as ExpenseStatus | '')}
           options={[
-            { value: '', label: 'All' },
+            { value: '', label: 'ทั้งหมด' },
             ...Object.values(ExpenseStatus).map((status) => ({
               value: status,
-              label: status.charAt(0) + status.slice(1).toLowerCase(),
+              label: {
+                PENDING: 'รอดำเนินการ',
+                APPROVED: 'อนุมัติแล้ว',
+                REJECTED: 'ปฏิเสธแล้ว',
+                REIMBURSED: 'เบิกจ่ายแล้ว',
+              }[status] || status.charAt(0) + status.slice(1).toLowerCase(),
             })),
           ]}
         />
@@ -153,7 +158,7 @@ function ExpenseListContent() {
                   onClick={fetchExpenses}
                   className="mt-2 text-sm text-red-600 underline hover:text-red-500"
                 >
-                  Try again
+                  ลองอีกครั้ง
                 </button>
               </div>
             </div>
