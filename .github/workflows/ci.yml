@@ -13,6 +13,8 @@ jobs:
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dummy
     steps:
@@ -40,6 +42,8 @@ jobs:
   security:
     name: Security Audit
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -60,6 +64,8 @@ jobs:
   test:
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     services:
       postgres:
         image: postgres:15
@@ -144,6 +150,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
+    permissions:
+      contents: read
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dummy
     steps:
@@ -169,6 +177,8 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [build]
+    permissions:
+      contents: read
     services:
       postgres:
         image: postgres:15
@@ -226,6 +236,8 @@ jobs:
     name: Schema Verification
     runs-on: ubuntu-latest
     needs: [build]
+    permissions:
+      contents: read
     services:
       postgres:
         image: postgres:15
@@ -326,6 +338,8 @@ jobs:
     needs: [docker]
     runs-on: [self-hosted, reimbursement]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
     env:
       DATABASE_URL: ${{ vars.DATABASE_URL }}
 
@@ -354,6 +368,9 @@ jobs:
     runs-on: [self-hosted, reimbursement]
     environment: production
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - name: Login to GHCR
