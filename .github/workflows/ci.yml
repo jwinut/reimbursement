@@ -96,8 +96,8 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Push schema to test database
-        run: npx prisma db push
+      - name: Run database migrations
+        run: npx prisma migrate deploy
 
       - name: Run tests with coverage
         run: npm run test:coverage
@@ -208,8 +208,8 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Push schema to test database
-        run: npx prisma db push
+      - name: Run database migrations
+        run: npx prisma migrate deploy
 
       - name: Run E2E tests
         run: npm run test:e2e
@@ -266,9 +266,41 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  db-migrate:
+    name: Database Migration
+    needs: [docker]
+    runs-on: [self-hosted, reimbursement]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run database migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
+
+      - name: Verify migration status
+        run: npx prisma migrate status
+        env:
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
+
   deploy:
     name: Deploy to Production
-    needs: [docker]
+    needs: [db-migrate]
     runs-on: [self-hosted, reimbursement]
     environment: production
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
