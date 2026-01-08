@@ -292,6 +292,7 @@ jobs:
             --name reimbursement-app \
             --restart unless-stopped \
             --network host \
+            -v reimbursement-uploads:/app/uploads \
             -e DATABASE_URL="${{ vars.DATABASE_URL }}" \
             -e NEXTAUTH_URL="${{ vars.NEXTAUTH_URL }}" \
             -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
