@@ -27,7 +27,7 @@
     "next-auth": "^4.24.13",
     "pg": "^8.16.3",
     "react": "^18",
-    "react-dom": "^18",
+    "react-dom": "^19",
     "react-hook-form": "^7.69.0",
     "sharp": "^0.34.5",
     "zod": "^4.3.4"
@@ -44,7 +44,7 @@
     "@types/node": "^25.0.3",
     "@types/pg": "^8.16.0",
     "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.16",
     "autoprefixer": "^10.4.23",
