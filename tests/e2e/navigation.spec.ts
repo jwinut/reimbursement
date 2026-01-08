@@ -11,6 +11,6 @@ test.describe('Navigation', () => {
   test('should have correct page title', async ({ page }) => {
     await page.goto('/login')
 
-    await expect(page).toHaveTitle(/reimbursement/i)
+    await expect(page).toHaveTitle(/ระบบเบิกค่าใช้จ่าย/i)
   })
 })

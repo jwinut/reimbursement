@@ -4,14 +4,14 @@ test.describe('Login Page', () => {
   test('should display login page with correct title', async ({ page }) => {
     await page.goto('/login')
 
-    await expect(page.getByRole('heading', { name: 'Reimbursement' })).toBeVisible()
-    await expect(page.getByRole('button', { name: /sign in with line/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'เบิกค่าใช้จ่าย' })).toBeVisible()
+    await expect(page.getByRole('button', { name: /เข้าสู่ระบบด้วย LINE/i })).toBeVisible()
   })
 
   test('should have enabled LINE sign in button', async ({ page }) => {
     await page.goto('/login')
 
-    const lineButton = page.getByRole('button', { name: /sign in with line/i })
+    const lineButton = page.getByRole('button', { name: /เข้าสู่ระบบด้วย LINE/i })
     await expect(lineButton).toBeEnabled()
     await expect(lineButton).toBeVisible()
   })
@@ -39,21 +39,21 @@ test.describe('Login Page', () => {
     await page.goto('/login?error=OAuthCallback')
 
     // Should show error state or message
-    await expect(page.getByRole('heading', { name: 'Reimbursement' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'เบิกค่าใช้จ่าย' })).toBeVisible()
     // The login page should still be functional
-    await expect(page.getByRole('button', { name: /sign in with line/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /เข้าสู่ระบบด้วย LINE/i })).toBeVisible()
   })
 
   test('should display error message for account creation failure', async ({ page }) => {
     await page.goto('/login?error=OAuthCreateAccount')
 
-    await expect(page.getByRole('heading', { name: 'Reimbursement' })).toBeVisible()
-    await expect(page.getByRole('button', { name: /sign in with line/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'เบิกค่าใช้จ่าย' })).toBeVisible()
+    await expect(page.getByRole('button', { name: /เข้าสู่ระบบด้วย LINE/i })).toBeVisible()
   })
 
   test('should have proper page title', async ({ page }) => {
     await page.goto('/login')
 
-    await expect(page).toHaveTitle(/reimbursement/i)
+    await expect(page).toHaveTitle(/ระบบเบิกค่าใช้จ่าย/i)
   })
 })

@@ -31,10 +31,10 @@ test.describe('Expense Form', () => {
       return
     }
 
-    await expect(page.getByRole('heading', { name: /new expense/i })).toBeVisible()
-    await expect(page.getByLabel(/description/i)).toBeVisible()
-    await expect(page.getByLabel(/amount/i)).toBeVisible()
-    await expect(page.getByLabel(/date/i)).toBeVisible()
+    await expect(page.getByRole('heading', { name: /สร้างค่าใช้จ่ายใหม่/i })).toBeVisible()
+    await expect(page.getByLabel(/รายละเอียด/i)).toBeVisible()
+    await expect(page.getByLabel(/จำนวนเงิน/i)).toBeVisible()
+    await expect(page.getByLabel(/วันที่/i)).toBeVisible()
   })
 
   test('should show validation errors for empty form submission', async ({ page }) => {
@@ -47,11 +47,11 @@ test.describe('Expense Form', () => {
     }
 
     // Clear the date field and submit
-    await page.getByLabel(/date/i).clear()
-    await page.getByRole('button', { name: /submit expense/i }).click()
+    await page.getByLabel(/วันที่/i).clear()
+    await page.getByRole('button', { name: /ส่งค่าใช้จ่าย/i }).click()
 
     // Should show validation errors
-    await expect(page.getByText(/description is required/i)).toBeVisible()
+    await expect(page.getByText(/กรุณากรอกรายละเอียด/i)).toBeVisible()
   })
 
   test('should allow filling out the expense form', async ({ page }) => {
@@ -64,12 +64,12 @@ test.describe('Expense Form', () => {
     }
 
     // Fill out the form
-    await page.getByLabel(/description/i).fill('Lunch meeting with client')
-    await page.getByLabel(/amount/i).fill('350')
-    await page.getByLabel(/date/i).fill('2024-01-15')
+    await page.getByLabel(/รายละเอียด/i).fill('Lunch meeting with client')
+    await page.getByLabel(/จำนวนเงิน/i).fill('350')
+    await page.getByLabel(/วันที่/i).fill('2024-01-15')
 
     // Verify values
-    await expect(page.getByLabel(/description/i)).toHaveValue('Lunch meeting with client')
-    await expect(page.getByLabel(/amount/i)).toHaveValue('350')
+    await expect(page.getByLabel(/รายละเอียด/i)).toHaveValue('Lunch meeting with client')
+    await expect(page.getByLabel(/จำนวนเงิน/i)).toHaveValue('350')
   })
 })
