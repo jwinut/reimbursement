@@ -7,6 +7,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { ExpenseStatus } from '@prisma/client'
 import { Navigation } from '@/components/Navigation'
 import { ExpenseList, ExpenseCardData } from '@/components/ExpenseList'
+import { NewExpenseModal } from '@/components/NewExpenseModal'
 import Link from 'next/link'
 
 interface Pagination {
@@ -25,6 +26,7 @@ function ExpenseListContent() {
   const { status: sessionStatus } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const showNewModal = searchParams.get('new') === 'true'
 
   const [expenses, setExpenses] = useState<ExpenseCardData[]>([])
   const [pagination, setPagination] = useState<Pagination | null>(null)
@@ -189,6 +191,8 @@ function ExpenseListContent() {
           }
         />
       </main>
+
+      {showNewModal && <NewExpenseModal basePath="/expenses/list" />}
     </div>
   )
 }

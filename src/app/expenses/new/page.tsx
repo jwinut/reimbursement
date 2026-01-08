@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
-import { ExpenseForm } from '@/components/ExpenseForm'
+import { Role } from '@prisma/client'
 
 export default async function NewExpensePage() {
   const session = await getServerSession(authOptions)
@@ -10,20 +10,10 @@ export default async function NewExpensePage() {
     redirect('/login')
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">New Expense</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Submit a new expense for reimbursement
-          </p>
-        </div>
-
-        <div className="bg-white shadow rounded-lg p-6">
-          <ExpenseForm />
-        </div>
-      </div>
-    </div>
-  )
+  // Redirect to appropriate dashboard with modal trigger
+  if (session.user.role === Role.MANAGER) {
+    redirect('/manager/dashboard?new=true')
+  } else {
+    redirect('/expenses/list?new=true')
+  }
 }

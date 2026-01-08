@@ -1,12 +1,13 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState, useCallback } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState, useCallback, Suspense } from 'react'
 import { Role } from '@prisma/client'
 import { Navigation } from '@/components/Navigation'
 import { ExpenseCardData } from '@/components/ExpenseList'
 import { PendingExpenseTable } from '@/components/PendingExpenseTable'
+import { NewExpenseModal } from '@/components/NewExpenseModal'
 import Link from 'next/link'
 
 interface SummaryData {
@@ -25,9 +26,11 @@ interface SummaryData {
   recentPending: ExpenseCardData[]
 }
 
-export default function ManagerDashboard() {
+function ManagerDashboardContent() {
   const { data: session, status: sessionStatus } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const showNewModal = searchParams.get('new') === 'true'
 
   const [summary, setSummary] = useState<SummaryData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -292,6 +295,20 @@ export default function ManagerDashboard() {
           </>
         )}
       </main>
+
+      {showNewModal && <NewExpenseModal basePath="/manager/dashboard" />}
     </div>
+  )
+}
+
+export default function ManagerDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
+      </div>
+    }>
+      <ManagerDashboardContent />
+    </Suspense>
   )
 }
