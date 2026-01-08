@@ -47,4 +47,23 @@ npx prisma migrate deploy
 echo ">>> Verifying migration status..."
 npx prisma migrate status
 
+echo ">>> Validating schema integrity..."
+# Check if database schema matches Prisma schema
+DIFF_OUTPUT=$(npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code 2>&1) || DIFF_EXIT=$?
+
+if [ "${DIFF_EXIT:-0}" = "2" ]; then
+  echo "!!! SCHEMA DRIFT DETECTED !!!"
+  echo "$DIFF_OUTPUT"
+  echo ""
+  echo "The database schema does not match the Prisma schema."
+  echo "This may indicate a failed migration or baseline issue."
+  exit 1
+elif [ "${DIFF_EXIT:-0}" = "1" ]; then
+  echo "!!! ERROR checking schema diff !!!"
+  echo "$DIFF_OUTPUT"
+  exit 1
+else
+  echo ">>> Schema validation passed - database matches Prisma schema"
+fi
+
 echo "=== Migration Complete ==="
