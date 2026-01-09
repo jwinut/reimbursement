@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Role } from '@prisma/client'
-import { NextRequest } from 'next/server'
 
 // Mock dependencies
 vi.mock('next-auth', () => ({
@@ -65,6 +64,7 @@ describe('GET /api/users', () => {
         role: Role.EMPLOYEE,
         isApproved: true,
         createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
       },
       {
         id: 'user-2',
@@ -74,6 +74,7 @@ describe('GET /api/users', () => {
         role: Role.MANAGER,
         isApproved: true,
         createdAt: new Date('2024-01-02'),
+        updatedAt: new Date('2024-01-02'),
       },
     ]
 

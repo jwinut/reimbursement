@@ -123,7 +123,7 @@ describe('Auth Configuration', () => {
           image: 'https://example.com/avatar.jpg',
         },
         expires: '2024-12-31T23:59:59.999Z',
-      }
+      } as any
       const mockToken = {
         sub: 'line-user-123',
         name: 'Test User',

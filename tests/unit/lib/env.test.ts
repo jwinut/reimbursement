@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { validateEnv } from '@/lib/env';
 
 describe('validateEnv', () => {
   const originalEnv = process.env;
@@ -21,8 +20,9 @@ describe('validateEnv', () => {
     LINE_CLIENT_SECRET: 'line-client-secret',
   };
 
-  it('should pass validation with valid environment variables', () => {
+  it('should pass validation with valid environment variables', async () => {
     process.env = { ...process.env, ...validEnv };
+    const { validateEnv } = await import('@/lib/env');
 
     const result = validateEnv();
 
@@ -33,41 +33,46 @@ describe('validateEnv', () => {
     expect(result.LINE_CLIENT_SECRET).toBe(validEnv.LINE_CLIENT_SECRET);
   });
 
-  it('should throw when DATABASE_URL is missing', () => {
+  it('should throw when DATABASE_URL is missing', async () => {
     const { DATABASE_URL, ...envWithoutDatabaseUrl } = validEnv;
     process.env = { ...process.env, ...envWithoutDatabaseUrl };
+    const { validateEnv } = await import('@/lib/env');
 
     expect(() => validateEnv()).toThrow('Missing required environment variables');
   });
 
-  it('should throw when NEXTAUTH_SECRET is missing', () => {
+  it('should throw when NEXTAUTH_SECRET is missing', async () => {
     const { NEXTAUTH_SECRET, ...envWithoutSecret } = validEnv;
     process.env = { ...process.env, ...envWithoutSecret };
+    const { validateEnv } = await import('@/lib/env');
 
     expect(() => validateEnv()).toThrow('Missing required environment variables');
   });
 
-  it('should throw when LINE_CLIENT_ID is missing', () => {
+  it('should throw when LINE_CLIENT_ID is missing', async () => {
     const { LINE_CLIENT_ID, ...envWithoutLineClientId } = validEnv;
     process.env = { ...process.env, ...envWithoutLineClientId };
+    const { validateEnv } = await import('@/lib/env');
 
     expect(() => validateEnv()).toThrow('Missing required environment variables');
   });
 
-  it('should allow MANAGER_LINE_IDS to be optional', () => {
+  it('should allow MANAGER_LINE_IDS to be optional', async () => {
     process.env = { ...process.env, ...validEnv };
+    const { validateEnv } = await import('@/lib/env');
 
     const result = validateEnv();
 
     expect(result.MANAGER_LINE_IDS).toBeUndefined();
   });
 
-  it('should include MANAGER_LINE_IDS when provided', () => {
+  it('should include MANAGER_LINE_IDS when provided', async () => {
     const envWithManagerIds = {
       ...validEnv,
       MANAGER_LINE_IDS: 'id1,id2,id3',
     };
     process.env = { ...process.env, ...envWithManagerIds };
+    const { validateEnv } = await import('@/lib/env');
 
     const result = validateEnv();
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Role } from '@prisma/client'
-import { createMockRequest, createMockParams } from '../helpers/mock-api-request'
+import { createMockRequest } from '../helpers/mock-api-request'
 
 // Mock dependencies
 vi.mock('next-auth', () => ({
@@ -45,7 +45,7 @@ describe('POST /api/users/[id]/disable', () => {
       method: 'POST',
     })
 
-    const response = await POST(request, { params: createMockParams({ id: 'user-123' }) })
+    const response = await POST(request, { params: Promise.resolve({ id: 'user-123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(401)
@@ -62,7 +62,7 @@ describe('POST /api/users/[id]/disable', () => {
       method: 'POST',
     })
 
-    const response = await POST(request, { params: createMockParams({ id: 'user-123' }) })
+    const response = await POST(request, { params: Promise.resolve({ id: 'user-123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(403)
@@ -80,7 +80,7 @@ describe('POST /api/users/[id]/disable', () => {
       method: 'POST',
     })
 
-    const response = await POST(request, { params: createMockParams({ id: 'user-123' }) })
+    const response = await POST(request, { params: Promise.resolve({ id: 'user-123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(403)
@@ -99,7 +99,7 @@ describe('POST /api/users/[id]/disable', () => {
       method: 'POST',
     })
 
-    const response = await POST(request, { params: createMockParams({ id: 'non-existent' }) })
+    const response = await POST(request, { params: Promise.resolve({ id: 'non-existent' }) })
     const data = await response.json()
 
     expect(response.status).toBe(404)
@@ -115,6 +115,7 @@ describe('POST /api/users/[id]/disable', () => {
       role: Role.MANAGER,
       isApproved: true,
       createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     vi.mocked(getServerSession).mockResolvedValue({
@@ -128,7 +129,7 @@ describe('POST /api/users/[id]/disable', () => {
       method: 'POST',
     })
 
-    const response = await POST(request, { params: createMockParams({ id: 'manager-123' }) })
+    const response = await POST(request, { params: Promise.resolve({ id: 'manager-123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(400)
@@ -144,6 +145,7 @@ describe('POST /api/users/[id]/disable', () => {
       role: Role.EMPLOYEE,
       isApproved: true,
       createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     const updatedUser = {
@@ -164,7 +166,7 @@ describe('POST /api/users/[id]/disable', () => {
       method: 'POST',
     })
 
-    const response = await POST(request, { params: createMockParams({ id: 'user-123' }) })
+    const response = await POST(request, { params: Promise.resolve({ id: 'user-123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(200)
@@ -181,6 +183,7 @@ describe('POST /api/users/[id]/disable', () => {
       role: Role.EMPLOYEE,
       isApproved: true,
       createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     vi.mocked(getServerSession).mockResolvedValue({
@@ -199,7 +202,7 @@ describe('POST /api/users/[id]/disable', () => {
       method: 'POST',
     })
 
-    await POST(request, { params: createMockParams({ id: 'user-123' }) })
+    await POST(request, { params: Promise.resolve({ id: 'user-123' }) })
 
     expect(prisma.user.update).toHaveBeenCalledWith({
       where: { id: 'user-123' },
