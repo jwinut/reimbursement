@@ -123,12 +123,13 @@ function SummariesContent() {
     setError(null)
 
     try {
-      const response = await fetch('/api/summaries/generate', {
+      const response = await fetch('/api/summaries', {
         method: 'POST',
         headers: {
           'x-csrf-token': csrfToken,
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ triggerType: 'MANUAL' }),
       })
 
       if (!response.ok) {
