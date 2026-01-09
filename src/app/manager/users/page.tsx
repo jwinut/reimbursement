@@ -29,7 +29,7 @@ function UserManagementContent() {
   useEffect(() => {
     fetch('/api/csrf')
       .then((res) => res.json())
-      .then((data) => setCsrfToken(data.token))
+      .then((data) => setCsrfToken(data.csrfToken))
       .catch(console.error)
   }, [])
 
