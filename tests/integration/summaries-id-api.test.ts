@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Role, SummaryTriggerType } from '@prisma/client'
+import { Role, SummaryTriggerType, ExpenseStatus } from '@prisma/client'
 import { NextRequest } from 'next/server'
 
 // Mock dependencies
@@ -90,14 +90,14 @@ describe('GET /api/summaries/[id]', () => {
           description: 'Lunch',
           amount: 300,
           date: '2024-01-02T00:00:00.000Z',
-          status: 'PENDING',
+          status: ExpenseStatus.PENDING,
         },
         {
           id: 'expense-2',
           description: 'Transportation',
           amount: 1200.5,
           date: '2024-01-03T00:00:00.000Z',
-          status: 'PENDING',
+          status: ExpenseStatus.PENDING,
         },
       ],
       triggerType: SummaryTriggerType.MANUAL,

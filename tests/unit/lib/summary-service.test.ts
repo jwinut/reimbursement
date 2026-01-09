@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { ExpenseStatus, SummaryTriggerType, Prisma } from '@prisma/client'
+import { ExpenseStatus, SummaryTriggerType, Prisma, Role } from '@prisma/client'
 
 // Mock prisma
 vi.mock('@/lib/prisma', () => ({
@@ -56,7 +56,7 @@ describe('summary-service', () => {
         displayName: 'Test User',
         pictureUrl: null,
         lineId: 'line-1',
-        role: 'EMPLOYEE',
+        role: Role.EMPLOYEE,
         isApproved: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -78,7 +78,7 @@ describe('summary-service', () => {
         displayName: 'Test User',
         pictureUrl: 'https://example.com/avatar.jpg',
         lineId: 'line-1',
-        role: 'EMPLOYEE',
+        role: Role.EMPLOYEE,
         isApproved: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -137,7 +137,7 @@ describe('summary-service', () => {
 
       vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser)
       vi.mocked(prisma.expense.findMany).mockResolvedValue(mockExpenses)
-      vi.mocked(prisma.summary.create).mockResolvedValue(mockCreatedSummary)
+      vi.mocked(prisma.summary.create).mockResolvedValue(mockCreatedSummary as any)
 
       const result = await generateUserSummary({
         userId: 'user-1',
@@ -173,7 +173,7 @@ describe('summary-service', () => {
         displayName: 'Test User',
         pictureUrl: null,
         lineId: 'line-1',
-        role: 'EMPLOYEE',
+        role: Role.EMPLOYEE,
         isApproved: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -227,7 +227,7 @@ describe('summary-service', () => {
         triggerType: SummaryTriggerType.MANUAL,
         createdAt: new Date(),
         user: { displayName: 'Test User', pictureUrl: null },
-      })
+      } as any)
 
       await generateUserSummary({
         userId: 'user-1',
@@ -265,7 +265,7 @@ describe('summary-service', () => {
           displayName: 'User 1',
           pictureUrl: null,
           lineId: 'line-1',
-          role: 'EMPLOYEE',
+          role: Role.EMPLOYEE,
           isApproved: true,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -275,7 +275,7 @@ describe('summary-service', () => {
           displayName: 'User 2',
           pictureUrl: null,
           lineId: 'line-2',
-          role: 'EMPLOYEE',
+          role: Role.EMPLOYEE,
           isApproved: true,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -333,7 +333,7 @@ describe('summary-service', () => {
           triggerType: SummaryTriggerType.SCHEDULED,
           createdAt: new Date(),
           user: { displayName: 'User 1', pictureUrl: null },
-        })
+        } as any)
         .mockResolvedValueOnce({
           id: 'summary-2',
           userId: 'user-2',
@@ -345,13 +345,13 @@ describe('summary-service', () => {
           triggerType: SummaryTriggerType.SCHEDULED,
           createdAt: new Date(),
           user: { displayName: 'User 2', pictureUrl: null },
-        })
+        } as any)
 
       const result = await generateAllPendingSummaries()
 
       expect(result).toHaveLength(2)
-      expect(result[0].id).toBe('summary-1')
-      expect(result[1].id).toBe('summary-2')
+      expect(result[0]!.id).toBe('summary-1')
+      expect(result[1]!.id).toBe('summary-2')
     })
 
     it('should use SCHEDULED trigger type by default', async () => {
@@ -361,7 +361,7 @@ describe('summary-service', () => {
         displayName: 'User 1',
         pictureUrl: null,
         lineId: 'line-1',
-        role: 'EMPLOYEE',
+        role: Role.EMPLOYEE,
         isApproved: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -395,7 +395,7 @@ describe('summary-service', () => {
         triggerType: SummaryTriggerType.SCHEDULED,
         createdAt: new Date(),
         user: { displayName: 'User 1', pictureUrl: null },
-      })
+      } as any)
 
       await generateAllPendingSummaries()
 
@@ -426,7 +426,7 @@ describe('summary-service', () => {
         },
       ]
 
-      vi.mocked(prisma.summary.findMany).mockResolvedValue(mockSummaries)
+      vi.mocked(prisma.summary.findMany).mockResolvedValue(mockSummaries as any)
       vi.mocked(prisma.summary.count).mockResolvedValue(1)
 
       const result = await getUserSummaries('user-1', { limit: 10, offset: 0 })
@@ -488,7 +488,7 @@ describe('summary-service', () => {
         },
       ]
 
-      vi.mocked(prisma.summary.findMany).mockResolvedValue(mockSummaries)
+      vi.mocked(prisma.summary.findMany).mockResolvedValue(mockSummaries as any)
       vi.mocked(prisma.summary.count).mockResolvedValue(2)
 
       const result = await getAllSummaries({ limit: 10, offset: 0 })
@@ -544,7 +544,7 @@ describe('summary-service', () => {
         user: { displayName: 'Test User', pictureUrl: 'https://example.com/avatar.jpg' },
       }
 
-      vi.mocked(prisma.summary.findUnique).mockResolvedValue(mockSummary)
+      vi.mocked(prisma.summary.findUnique).mockResolvedValue(mockSummary as any)
 
       const result = await getSummaryById('summary-1')
 
@@ -573,7 +573,7 @@ describe('summary-service', () => {
         triggerType: SummaryTriggerType.MANUAL,
         createdAt,
         user: { displayName: 'Test User', pictureUrl: null },
-      })
+      } as any)
 
       const result = await getSummaryById('summary-1')
 
