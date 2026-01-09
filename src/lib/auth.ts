@@ -44,34 +44,44 @@ export const authOptions: NextAuthOptions = {
         const isConfiguredManager = MANAGER_LINE_IDS.includes(lineId)
 
         // Upsert user in database
-        await prisma.user.upsert({
-          where: { lineId },
-          update: {
-            displayName: (profile as any).displayName,
-            pictureUrl: (profile as any).pictureUrl,
-            // Auto-promote to manager and auto-approve if in configured list
-            ...(isConfiguredManager && { role: Role.MANAGER, isApproved: true })
-          },
-          create: {
-            lineId,
-            displayName: (profile as any).displayName,
-            pictureUrl: (profile as any).pictureUrl,
-            role: isConfiguredManager ? Role.MANAGER : Role.EMPLOYEE,
-            isApproved: isConfiguredManager // Managers are auto-approved
-          }
-        })
+        try {
+          await prisma.user.upsert({
+            where: { lineId },
+            update: {
+              displayName: (profile as any).displayName,
+              pictureUrl: (profile as any).pictureUrl,
+              // Auto-promote to manager and auto-approve if in configured list
+              ...(isConfiguredManager && { role: Role.MANAGER, isApproved: true })
+            },
+            create: {
+              lineId,
+              displayName: (profile as any).displayName,
+              pictureUrl: (profile as any).pictureUrl,
+              role: isConfiguredManager ? Role.MANAGER : Role.EMPLOYEE,
+              isApproved: isConfiguredManager // Managers are auto-approved
+            }
+          })
+        } catch (error) {
+          console.error('[AUTH] Failed to upsert user during sign-in:', error)
+          // Allow sign-in to continue, user just won't be in DB yet
+        }
       }
       return true
     },
     async session({ session, token }) {
       if (session.user && token.sub) {
-        const user = await prisma.user.findUnique({
-          where: { lineId: token.sub }
-        })
-        if (user) {
-          session.user.id = user.id
-          session.user.role = user.role
-          session.user.isApproved = user.isApproved
+        try {
+          const user = await prisma.user.findUnique({
+            where: { lineId: token.sub }
+          })
+          if (user) {
+            session.user.id = user.id
+            session.user.role = user.role
+            session.user.isApproved = user.isApproved
+          }
+        } catch (error) {
+          console.error('[AUTH] Failed to fetch user during session:', error)
+          // Return session without user enrichment (graceful degradation)
         }
       }
       return session

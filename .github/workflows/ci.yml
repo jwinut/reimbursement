@@ -445,6 +445,10 @@ jobs:
 
       - name: Verify deployment
         run: |
-          sleep 5
-          docker ps | grep reimbursement
+          sleep 10
+          # Check containers are running
+          docker ps | grep reimbursement-app
+          docker ps | grep reimbursement-db
+          # Check health endpoint
+          curl -sf http://localhost:3000/api/health || exit 1
           echo "Deployment successful!"
