@@ -7,19 +7,14 @@ import { Role, SummaryTriggerType } from '@prisma/client'
 import { Navigation } from '@/components/Navigation'
 import Link from 'next/link'
 
-interface SummaryUser {
-  id: string
-  displayName: string | null
-  pictureUrl: string | null
-}
-
 interface Summary {
   id: string
   userId: string
-  user: SummaryUser
+  userName: string | null
+  userPictureUrl: string | null
   startDate: string
   endDate: string
-  totalAmount: number
+  totalAmount: string
   expenseCount: number
   triggerType: SummaryTriggerType
   createdAt: string
@@ -307,22 +302,22 @@ function SummariesContent() {
                     <tr key={summary.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          {summary.user.pictureUrl ? (
+                          {summary.userPictureUrl ? (
                             <img
-                              src={summary.user.pictureUrl}
-                              alt={summary.user.displayName || 'User'}
+                              src={summary.userPictureUrl}
+                              alt={summary.userName || 'User'}
                               className="h-10 w-10 rounded-full"
                             />
                           ) : (
                             <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
                               <span className="text-gray-500 text-sm">
-                                {summary.user.displayName?.charAt(0) || '?'}
+                                {summary.userName?.charAt(0) || '?'}
                               </span>
                             </div>
                           )}
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">
-                              {summary.user.displayName || 'Unknown'}
+                              {summary.userName || 'Unknown'}
                             </div>
                           </div>
                         </div>
@@ -334,7 +329,7 @@ function SummariesContent() {
                         {summary.expenseCount} รายการ
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {formatCurrency(summary.totalAmount)}
+                        {formatCurrency(parseFloat(summary.totalAmount))}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${TRIGGER_TYPE_COLORS[summary.triggerType]}`}>
@@ -364,22 +359,22 @@ function SummariesContent() {
                 <div key={summary.id} className="bg-white shadow-sm rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
-                      {summary.user.pictureUrl ? (
+                      {summary.userPictureUrl ? (
                         <img
-                          src={summary.user.pictureUrl}
-                          alt={summary.user.displayName || 'User'}
+                          src={summary.userPictureUrl}
+                          alt={summary.userName || 'User'}
                           className="h-10 w-10 rounded-full"
                         />
                       ) : (
                         <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
                           <span className="text-gray-500 text-sm">
-                            {summary.user.displayName?.charAt(0) || '?'}
+                            {summary.userName?.charAt(0) || '?'}
                           </span>
                         </div>
                       )}
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-900">
-                          {summary.user.displayName || 'Unknown'}
+                          {summary.userName || 'Unknown'}
                         </p>
                         <p className="text-xs text-gray-500">
                           {formatDate(summary.createdAt)}
@@ -402,7 +397,7 @@ function SummariesContent() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-500">ยอดรวม:</span>
-                      <span className="font-medium text-gray-900">{formatCurrency(summary.totalAmount)}</span>
+                      <span className="font-medium text-gray-900">{formatCurrency(parseFloat(summary.totalAmount))}</span>
                     </div>
                   </div>
 
