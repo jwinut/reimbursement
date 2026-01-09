@@ -338,35 +338,6 @@ jobs:
     name: Database Migration
     needs: [docker]
     runs-on: [self-hosted, reimbursement]
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-    env:
-      DATABASE_URL: ${{ vars.DATABASE_URL }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate Prisma client
-        run: npx prisma generate
-
-      - name: Run database migrations
-        run: ./scripts/migrate.sh
-
-  deploy:
-    name: Deploy to Production
-    needs: [db-migrate]
-    runs-on: [self-hosted, reimbursement]
     environment: production
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     permissions:
@@ -380,25 +351,83 @@ jobs:
       - name: Pull latest image
         run: docker pull ghcr.io/jwinut/reimbursement:latest
 
-      - name: Stop existing container
-        run: docker stop reimbursement-app || true
+      - name: Ensure network exists
+        run: docker network create reimbursement-net 2>/dev/null || true
 
-      - name: Remove existing container
-        run: docker rm reimbursement-app || true
+      - name: Ensure PostgreSQL is running
+        run: |
+          if ! docker ps | grep -q reimbursement-db; then
+            echo "Starting PostgreSQL container..."
+            docker run -d \
+              --name reimbursement-db \
+              --restart unless-stopped \
+              --network reimbursement-net \
+              -v reimbursement-postgres:/var/lib/postgresql/data \
+              -e POSTGRES_USER=postgres \
+              -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
+              -e POSTGRES_DB=reimbursement \
+              postgres:16-alpine
 
-      - name: Run new container
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 10
+          else
+            echo "PostgreSQL already running"
+          fi
+
+      - name: Run database migrations
+        run: |
+          docker run --rm \
+            --network reimbursement-net \
+            -e DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@reimbursement-db:5432/reimbursement" \
+            ghcr.io/jwinut/reimbursement:latest \
+            npx prisma migrate deploy
+
+      - name: Verify migration status
+        run: |
+          docker run --rm \
+            --network reimbursement-net \
+            -e DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@reimbursement-db:5432/reimbursement" \
+            ghcr.io/jwinut/reimbursement:latest \
+            npx prisma migrate status
+
+  deploy:
+    name: Deploy to Production
+    needs: [db-migrate]
+    runs-on: [self-hosted, reimbursement]
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Pull latest image
+        run: docker pull ghcr.io/jwinut/reimbursement:latest
+
+      - name: Create network
+        run: docker network create reimbursement-net 2>/dev/null || true
+
+      - name: Stop existing app container
+        run: |
+          docker stop reimbursement-app 2>/dev/null || true
+          docker rm reimbursement-app 2>/dev/null || true
+
+      - name: Run App container
         run: |
           docker run -d \
             --name reimbursement-app \
             --restart unless-stopped \
-            --network host \
+            --network reimbursement-net \
+            -p 3000:3000 \
             -v reimbursement-uploads:/app/uploads \
-            -e DATABASE_URL="${{ vars.DATABASE_URL }}" \
+            -e DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@reimbursement-db:5432/reimbursement" \
             -e NEXTAUTH_URL="${{ vars.NEXTAUTH_URL }}" \
             -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
             -e LINE_CLIENT_ID="${{ vars.LINE_CLIENT_ID }}" \
             -e LINE_CLIENT_SECRET="${{ secrets.LINE_CLIENT_SECRET }}" \
-            -e MANAGER_LINE_IDS="${{ vars.MANAGER_LINE_IDS }}" \
+            -e MANAGER_LINE_IDS="${{ secrets.MANAGER_LINE_IDS }}" \
             ghcr.io/jwinut/reimbursement:latest
 
       - name: Cleanup old images
@@ -407,5 +436,5 @@ jobs:
       - name: Verify deployment
         run: |
           sleep 5
-          docker ps | grep reimbursement-app
+          docker ps | grep reimbursement
           echo "Deployment successful!"
