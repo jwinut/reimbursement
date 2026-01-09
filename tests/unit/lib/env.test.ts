@@ -35,7 +35,8 @@ describe('validateEnv', () => {
 
   it('should throw when DATABASE_URL is missing', async () => {
     const { DATABASE_URL, ...envWithoutDatabaseUrl } = validEnv;
-    process.env = { ...process.env, ...envWithoutDatabaseUrl };
+    // Completely replace process.env to ensure DATABASE_URL is not set
+    process.env = { NODE_ENV: 'test', ...envWithoutDatabaseUrl };
     const { validateEnv } = await import('@/lib/env');
 
     expect(() => validateEnv()).toThrow('Missing required environment variables');
@@ -43,7 +44,8 @@ describe('validateEnv', () => {
 
   it('should throw when NEXTAUTH_SECRET is missing', async () => {
     const { NEXTAUTH_SECRET, ...envWithoutSecret } = validEnv;
-    process.env = { ...process.env, ...envWithoutSecret };
+    // Completely replace process.env to ensure NEXTAUTH_SECRET is not set
+    process.env = { NODE_ENV: 'test', ...envWithoutSecret };
     const { validateEnv } = await import('@/lib/env');
 
     expect(() => validateEnv()).toThrow('Missing required environment variables');
@@ -51,7 +53,8 @@ describe('validateEnv', () => {
 
   it('should throw when LINE_CLIENT_ID is missing', async () => {
     const { LINE_CLIENT_ID, ...envWithoutLineClientId } = validEnv;
-    process.env = { ...process.env, ...envWithoutLineClientId };
+    // Completely replace process.env to ensure LINE_CLIENT_ID is not set
+    process.env = { NODE_ENV: 'test', ...envWithoutLineClientId };
     const { validateEnv } = await import('@/lib/env');
 
     expect(() => validateEnv()).toThrow('Missing required environment variables');
