@@ -21,7 +21,17 @@ RUN npx prisma generate
 # Build the application
 RUN npm run build
 
-# Stage 3: Runner
+# Stage 3: Migrator (for running database migrations)
+FROM node:25-alpine AS migrator
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+
+CMD ["npx", "prisma", "migrate", "deploy"]
+
+# Stage 4: Runner
 FROM node:25-alpine AS runner
 WORKDIR /app
 
@@ -34,12 +44,6 @@ RUN adduser --system --uid 1001 nextjs
 # Copy necessary files
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder /app/node_modules/.bin ./node_modules/.bin
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Create public and uploads directories
 RUN mkdir -p ./public ./uploads

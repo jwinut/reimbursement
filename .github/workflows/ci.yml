@@ -324,13 +324,24 @@ jobs:
             type=sha,prefix=
             type=ref,event=tag
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (runner)
         uses: docker/build-push-action@v6
         with:
           context: .
+          target: runner
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Docker image (migrator)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: migrator
+          push: true
+          tags: ghcr.io/${{ github.repository }}:migrator
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -348,8 +359,8 @@ jobs:
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Pull latest image
-        run: docker pull ghcr.io/jwinut/reimbursement:latest
+      - name: Pull migrator image
+        run: docker pull ghcr.io/jwinut/reimbursement:migrator
 
       - name: Ensure network exists
         run: docker network create reimbursement-net 2>/dev/null || true
@@ -379,15 +390,14 @@ jobs:
           docker run --rm \
             --network reimbursement-net \
             -e DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@reimbursement-db:5432/reimbursement" \
-            ghcr.io/jwinut/reimbursement:latest \
-            npx prisma migrate deploy
+            ghcr.io/jwinut/reimbursement:migrator
 
       - name: Verify migration status
         run: |
           docker run --rm \
             --network reimbursement-net \
             -e DATABASE_URL="postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@reimbursement-db:5432/reimbursement" \
-            ghcr.io/jwinut/reimbursement:latest \
+            ghcr.io/jwinut/reimbursement:migrator \
             npx prisma migrate status
 
   deploy:
