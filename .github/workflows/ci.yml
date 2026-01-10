@@ -404,6 +404,7 @@ jobs:
     name: Deploy to Production
     needs: [db-migrate]
     runs-on: [self-hosted, reimbursement]
+    environment: production
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     permissions:
       contents: read
